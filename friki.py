@@ -220,6 +220,22 @@ def translate(obj1, x, y = None, z = None):
 	
 	obj1.Placement.Base = FreeCAD.Vector(v)
 
+def transform(obj, matrix):
+	obj.Placement = FreeCAD.Placement(matrix)
+
+def matrix_translate(x, y, z):
+	"""Homogeneous matrix for translation"""
+	return  FreeCAD.Matrix(1, 0, 0,  x,
+                             0, 1, 0, y,
+                             0, 0, 1, z,
+                             0, 0, 0, 1)
+def matrix_rotx(ang):
+	rad = math.radians(ang)
+	return  FreeCAD.Matrix(1,  0,               0,            0,
+                             0, math.cos(rad), -math.sin(rad),  0,
+                             0, math.sin(rad),  math.cos(rad), 0,
+                             0,  0,               0,            1)
+
 def test1():
 	print("Hola")
 	v = vector(10,10,10)
@@ -288,5 +304,13 @@ def test5():
 
 #---- Main
 print ("Hola!")
-test5()
+frame()
+f = frame()
+M = matrix_translate(20, 0, 0)
+N = matrix_rotx(30)
+T = M * N
+transform(f, T)
+
+
+
 
