@@ -17,7 +17,7 @@ class part(object):
 		print("Union {} + {}".format(self.obj.Label, other.obj.Label))
 
 		#-- Return the union of the two objects
-		return union(self, other)
+		return union([self, other])
 
 	def translate(self, x, y, z):
 		"""Translate the object"""
@@ -48,7 +48,9 @@ class part(object):
 class union(part):
 	"""Union of objects"""
 	
-	def __init__(self, part1, part2):
+	def __init__(self, items):
+		"""items = list of parts to perform union"""
+
 		#-- Call the parent class constructor first
 		super(union, self).__init__()
 		
@@ -57,7 +59,8 @@ class union(part):
 		self.obj = doc.addObject("Part::MultiFuse","Union")
 
 		#-- Do the union!
-		self.obj.Shapes = [part1.obj, part2.obj]
+		l = [item.obj for item in items]
+		self.obj.Shapes = l
 
 		doc.recompute()
 		print("Union!")
@@ -173,13 +176,29 @@ def test_cross2():
 
 	#-- Base
 	b = s1 + s2
-	base = cube(b, center = True).translate(0, 0, b.z/2)
+	base = cube(b, center = True).translate(0, 0, -b.z/2)
 	
 	final_part = base + cross
+
+def test_multiple_unions_1():
+	v = FreeCAD.Vector(10, 10, 10)
+	c1 = cube(v)
+	c2 = cube(v).translate(v.x, 0, 0)
+	c3 = cube(v).translate(2 * v.x, 0, 0)
+	c4 = cube(v).translate(3 * v.x, 0, 0)
+	part = c1 + c2 + c3 + c4
+
+def test_multiple_unions_2():
+	v = FreeCAD.Vector(10, 10, 10)
+	l = [cube(v).translate(i * v.x, i, 0) for i in range(10) ]
+	part = union(l)	
 	
 if __name__ == "__main__":
 	#test_cube1()
 	#test_L()
 	#test_cross()
-	test_cross2()
+	#test_cross2()
+	#test_multiple_unions_1()
+	test_multiple_unions_2()
+
 
