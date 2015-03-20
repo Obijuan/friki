@@ -12,10 +12,24 @@ class part(object):
 	
 	# overload +
 	def __add__(self, other):
+		"""Union operator"""
+		
 		print("Parts sum!!! {} + {}".format(self.obj.Label, other.obj.Label))
 
 		#-- Return the union of the two objects
 		return union(self, other)
+
+	def translate(self, x, y, z):
+		"""Translate the object"""
+		
+		#-- Get the translation vector
+		v = FreeCAD.Vector(x, y, z)
+		
+		#-- Apply the translation (relative to the current position)
+		self.obj.Placement.Base += v
+	
+		print("hola")
+		return self
 
 class union(part):
 	"""Union of objects"""
@@ -63,18 +77,6 @@ class cube(part):
 	def __str__(self):
 		str_id = "cube({}, {}, {}). Label: {}".format(10, 10, 10, self.obj.Label)
 		return str_id	
-	
-	def translate(self, x, y, z):
-		"""Translate the object"""
-
-		#-- Get the translation vector
-		v = FreeCAD.Vector(x, y, z)
-		
-		#-- Apply the translation (relative to the current position)
-		self.obj.Placement.Base += v
-
-		print("hola")
-		return self
 	
 	def execute(self, obj):
 		"""Build the object"""
