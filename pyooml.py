@@ -14,7 +14,7 @@ class part(object):
 	def __add__(self, other):
 		"""Union operator"""
 		
-		print("Parts sum!!! {} + {}".format(self.obj.Label, other.obj.Label))
+		print("Union {} + {}".format(self.obj.Label, other.obj.Label))
 
 		#-- Return the union of the two objects
 		return union(self, other)
@@ -65,7 +65,10 @@ class cube(part):
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cube")
 
 		#--Add property
-		
+		self.obj.addProperty("App::PropertyLength","lx","Cube","Length in x axis").lx = lx
+		self.obj.addProperty("App::PropertyLength","ly","Cube","Length in y axis").ly = ly
+		self.obj.addProperty("App::PropertyLength","lz","Cube","Length in z axis").lz = lz
+
 		#-- Configure the object for working ok in the Freecad environment	
 		self.obj.Proxy = self
 		self.obj.ViewObject.Proxy = self
@@ -75,13 +78,51 @@ class cube(part):
 		print ("Cube Init!")
 	
 	def __str__(self):
-		str_id = "cube({}, {}, {}). Label: {}".format(10, 10, 10, self.obj.Label)
-		return str_id	
+		str_id = "cube({}, {}, {}). Label: {}".format(self.obj.lx, self.obj.ly, 
+												      self.obj.lz, self.obj.Label)
+		return str_id
 	
+	@property
+	def lx(self):
+		"""Object length in x axis"""
+		print("Accesing lx...")
+		return self.obj.lx
+	
+	@lx.setter
+	def lx(self, value):
+		"""Attribute: Set the length in x axis"""
+		self.obj.lx = value
+		FreeCAD.ActiveDocument.recompute()	
+
+	@property
+	def ly(self):
+		"""Object length in y axis"""
+		print("Accesing ly...")
+		return self.obj.ly
+	
+	@ly.setter
+	def ly(self, value):
+		"""Attribute: Set the length in y axis"""
+		self.obj.ly = value
+		FreeCAD.ActiveDocument.recompute()
+		
+	@property
+	def lz(self):
+		"""Object length in z axis"""
+		print("Accesing lz...")
+		return self.obj.lz
+	
+	@lz.setter
+	def lz(self, value):
+		"""Attribute: Set the length in z axis"""
+		self.obj.lz = value
+		FreeCAD.ActiveDocument.recompute()	
+		
 	def execute(self, obj):
 		"""Build the object"""
-		obj.Shape = Part.makeBox(10, 10, 10)
-		print ("Cube Exetute!")
+		
+		obj.Shape = Part.makeBox(obj.lx, obj.ly, obj.lz)
+		print ("Cube Execute!")
 	
 	def getDefaultDisplayMode(self):
 		"""VIEWPROVIDER..."""
