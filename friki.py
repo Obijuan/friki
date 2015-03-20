@@ -221,13 +221,26 @@ def translate(obj1, x, y = None, z = None):
 	obj1.Placement.Base = FreeCAD.Vector(v)
 
 def transform(obj, matrix):
-	obj.Placement = FreeCAD.Placement(matrix)
+	#-- Get the current transform matrix
+	M = obj.Placement.toMatrix()
 
-def matrix_translate(x, y, z):
+	#-- Apply the new transformation to the current transform
+	obj.Placement = FreeCAD.Placement(matrix * M)
+
+def matrix_translate(x, y=None, z=None):
 	"""Homogeneous matrix for translation"""
-	return  FreeCAD.Matrix(1, 0, 0,  x,
-                             0, 1, 0, y,
-                             0, 0, 1, z,
+	
+	#-- Function overloading. x is mandatory
+	if y == None and z == None:
+		#-- the first argument is an App.Vector
+		v = x
+	else:
+		#-- The three components are given
+		v = FreeCAD.Vector(x, y, z)
+	
+	return  FreeCAD.Matrix(1, 0, 0,  v.x,
+                             0, 1, 0, v.y,
+                             0, 0, 1, v.z,
                              0, 0, 0, 1)
 def matrix_rotx(ang):
 	rad = math.radians(ang)
@@ -302,14 +315,32 @@ def test5():
 	vector(v1p)
 	translate(vector(v2p), v1p)
 
+def test6():
+	frame()
+	f = frame()
+	M = matrix_translate(20, 0, 0)
+	N = matrix_rotx(30)
+	T = M * N
+	transform(f, T)
+
+
 #---- Main
 print ("Hola!")
+#-- Exercise. Barrientos book. 79. Example. 3.1
 frame()
-f = frame()
-M = matrix_translate(20, 0, 0)
-N = matrix_rotx(30)
-T = M * N
-transform(f, T)
+p = FreeCAD.Vector(6, -3, 8)
+vector(p)
+f1 = frame()
+M = matrix_translate(p)
+transform(f1,M)
+
+r = FreeCAD.Vector(-2, 7, 3)
+transform(vector(r), M)
+
+r0 = M.multiply(r)
+yellow(vector(r0))
+print("r0: {}".format(r0))
+
 
 
 
