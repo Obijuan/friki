@@ -191,7 +191,18 @@ def test_multiple_unions_1():
 def test_multiple_unions_2():
 	v = FreeCAD.Vector(10, 10, 10)
 	l = [cube(v).translate(i * v.x, i, 0) for i in range(10) ]
-	part = union(l)	
+	part = union(l)
+
+def test_stairs():
+	v = FreeCAD.Vector(10, 40, 4)
+	l = [cube(v.x, v.y, v.z * i).translate(i * v.x, 0, 0) for i in range(1,10)]
+	union(l)
+
+def test_stairs_2D():
+	v = FreeCAD.Vector(100, 100, 4)
+	l = [cube(v.x - 10*i, v.y - 10*i, v.z).translate(0, 0, v.z * i) for i in range(10)]
+	union(l)
+	
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -199,6 +210,9 @@ if __name__ == "__main__":
 	#test_cross()
 	#test_cross2()
 	#test_multiple_unions_1()
-	test_multiple_unions_2()
+	#test_multiple_unions_2()
+	#test_stairs()
+	test_stairs_2D()
+
 
 
