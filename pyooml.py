@@ -30,6 +30,20 @@ class part(object):
 	
 		print("hola")
 		return self
+	
+	def _vector_from_args(self, x, y, z):
+		"""Utility function. It returns a vector with the x,y,z components"""
+		
+		#-- Function overloading. x is mandatory
+		if y == None and z == None:
+			#-- the first argument is an App.Vector
+			v = x
+		else:
+			#-- The three components are given
+			v = FreeCAD.Vector(x, y, z)
+
+		#-- Return the vector
+		return v
 
 class union(part):
 	"""Union of objects"""
@@ -52,7 +66,7 @@ class union(part):
 class cube(part):
 	"""Primitive Object: a cube"""
 	
-	def __init__(self, lx = 10, ly = 10, lz = 10):
+	def __init__(self, lx, ly = None, lz = None, center = False):
 		"""Create a primitive cube:
 			lx: length in x axis
 			ly: length in y axis
@@ -61,13 +75,19 @@ class cube(part):
 		#-- Call the parent class constructor first
 		super(cube, self).__init__()
 		
+		v = self._vector_from_args(lx, ly, lz)
+
 		#-- Create the Freecad Object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cube")
 
 		#--Add property
-		self.obj.addProperty("App::PropertyLength","lx","Cube","Length in x axis").lx = lx
-		self.obj.addProperty("App::PropertyLength","ly","Cube","Length in y axis").ly = ly
-		self.obj.addProperty("App::PropertyLength","lz","Cube","Length in z axis").lz = lz
+		self.obj.addProperty("App::PropertyLength","lx","Cube","Length in x axis").lx = v.x
+		self.obj.addProperty("App::PropertyLength","ly","Cube","Length in y axis").ly = v.y
+		self.obj.addProperty("App::PropertyLength","lz","Cube","Length in z axis").lz = v.z
+
+		#-- Set the pos
+		if center == True:
+			self.obj.Placement.Base = FreeCAD.Vector(-v.x / 2., -v.y / 2., -v.z / 2.)
 
 		#-- Configure the object for working ok in the Freecad environment	
 		self.obj.Proxy = self
@@ -136,7 +156,30 @@ def test_cube1():
 	#-- Place a translated cube
 	cube().translate(10, 10, 10)
 
+def test_L():
+	c1 = cube(40, 10, 10)
+	c2 = cube(10, 40, 10)
+	l = c1 + c2
+
+def test_cross():
+	c1 = cube(40, 10, 10, center = True)
+	c2 = cube(10, 40, 10, center = True)
+	cross = c1 + c2
+
+def test_cross2():
+	s1 = FreeCAD.Vector(40, 10, 10)
+	s2 = FreeCAD.Vector(10, 40, 10)
+	cross = cube(s1, center = True) + cube(s2, center = True)
+
+	#-- Base
+	b = s1 + s2
+	base = cube(b, center = True).translate(0, 0, b.z/2)
+	
+	final_part = base + cross
 	
 if __name__ == "__main__":
-	test_cube1()
+	#test_cube1()
+	#test_L()
+	#test_cross()
+	test_cross2()
 
