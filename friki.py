@@ -324,22 +324,112 @@ def test6():
 	transform(f, T)
 
 
-#---- Main
-print ("Hola!")
 #-- Exercise. Barrientos book. 79. Example. 3.1
-frame()
-p = FreeCAD.Vector(6, -3, 8)
-vector(p)
-f1 = frame()
-M = matrix_translate(p)
-transform(f1,M)
+def barrientos_pag79_ex3_1():
+	frame()
+	p = FreeCAD.Vector(6, -3, 8)
+	vector(p)
+	f1 = frame()
+	M = matrix_translate(p)
+	transform(f1,M)
+	
+	r = FreeCAD.Vector(-2, 7, 3)
+	transform(vector(r), M)
+	
+	r0 = M.multiply(r)
+	yellow(vector(r0))
+	print("r0: {}".format(r0))
 
-r = FreeCAD.Vector(-2, 7, 3)
-transform(vector(r), M)
+class Line:
+    def __init__(self, obj):
+         '''"App two point properties" '''
+         obj.addProperty("App::PropertyVector","p1","Line","Start point")
+         obj.addProperty("App::PropertyVector","p2","Line","End point").p2=FreeCAD.Vector(100,0,0)
+         obj.Proxy = self
+   
+    def execute(self, fp):
+        '''"Print a short message when doing a recomputation, this method is mandatory" '''
+        fp.Shape = Part.makeLine(fp.p1,fp.p2)
 
-r0 = M.multiply(r)
-yellow(vector(r0))
-print("r0: {}".format(r0))
+class ViewProviderLine:
+   def __init__(self, obj):
+      ''' Set this object to the proxy object of the actual view provider '''
+      obj.Proxy = self
+
+   def getDefaultDisplayMode(self):
+      ''' Return the name of the default display mode. It must be defined in getDisplayModes. '''
+      return "Flat Lines"
+
+def test_line():
+	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Line")
+	Line(a)
+	ViewProviderLine(a.ViewObject)
+	App.ActiveDocument.recompute()
+
+class Generic:
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyLength","Length","Link","Length of the link in x").Length=1.0
+		obj.Proxy = self
+   
+	def execute(self, fp):
+		fp.Shape = Part.makeBox(fp.Length, fp.Length/2., fp.Length/2.)
+		print("Link execute")
+
+class ViewProviderGeneric:
+   def __init__(self, obj):
+      obj.Proxy = self
+
+   def getDefaultDisplayMode(self):
+      return "Flat Lines"
+
+class xcube(object):
+	def __init__(self):
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Xcube")
+		self.obj.addProperty("App::PropertyLength","Length","Xcube","testing...").Length=1.0
+		self.obj.Proxy = self
+		self.obj.ViewObject.Proxy = self
+		FreeCAD.ActiveDocument.recompute()
+		print("xcube init!")
+	
+	@property
+	def Length(self):
+		"""Object length"""
+		print("Length.......")
+		return self.obj.Length
+	
+	@Length.setter
+	def Length(self, value):
+		"""Attribute: Set the Length"""
+		self.obj.Length = value
+		FreeCAD.ActiveDocument.recompute()
+
+	def execute(self, fp):
+		fp.Shape = Part.makeBox(fp.Length, fp.Length/2., fp.Length/2.)
+		print("Link execute")
+	
+	def onChanged(self, fp, prop):
+		"'''Do something when a property has changed'''"
+		FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")	
+		
+
+	def getDefaultDisplayMode(self):
+		print("getDefaultDisplayMode")
+		return "Flat Lines"
+
+
+
+if __name__ == "__main__":
+	print ("Hola!")
+	#barrientos_pag79_ex3_1()
+	#test_line()
+	#a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Generic")
+	#Generic(a)
+	#ViewProviderGeneric(a.ViewObject)
+	#App.ActiveDocument.recompute()
+	c = xcube()
+	print(c.Length)
+#---- Doc
+# http://www.freecadweb.org/wiki/index.php?title=Scripted_objects
 
 
 
