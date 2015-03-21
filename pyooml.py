@@ -1,5 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+#-------------------------------------------------------------------------
+#- PYOOML.  Python Object Oriented Mechanics Library
+#-------------------------------------------------------------------------
+#  (C)  Juan Gonzalez-Gomez (Obijuan)  March-2015
+#  (C)  Alberto Valero
+#--------------------------------------------------------------------------
+#-  Released under de GPL v2 License
+#---------------------------------------------------------------------------
+
 
 import FreeCAD
 import Part
@@ -202,7 +211,31 @@ def test_stairs_2D():
 	v = FreeCAD.Vector(100, 100, 4)
 	l = [cube(v.x - 10*i, v.y - 10*i, v.z).translate(0, 0, v.z * i) for i in range(10)]
 	union(l)
+
+import math
 	
+def cube_sine_1():
+	v = FreeCAD.Vector(10, 80, 10)
+	A = 20
+	N = 20
+	k = 2
+	z0 = 10
+	phi_ini = math.pi / 2
+	l = [cube(v.x, v.y, A * math.sin(2 * math.pi * i / N - phi_ini) + A + z0).translate(v.x * i, 0, 0) for i in range(k * N)]
+	union(l)
+
+def cube_sine_2():
+	v = FreeCAD.Vector(10, 10, 10)
+	A = 20
+	N = 10
+	k = 1
+	z0 = 10
+	z = [A * math.sin(2 * math.pi * i / N - phi_ini) + A + z0 for i in range(k * N)]
+	l = [cube(v.x, v.y, zx + zy).translate(v.x * i, v.y * j, 0) 
+          for i, zx in enumerate(z) for j, zy in enumerate(z)]
+	union(l)
+
+
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -212,7 +245,9 @@ if __name__ == "__main__":
 	#test_multiple_unions_1()
 	#test_multiple_unions_2()
 	#test_stairs()
-	test_stairs_2D()
+	#test_stairs_2D()
+	#cube_sine_1()
+	cube_sine_2()
 
 
 
