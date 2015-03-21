@@ -230,6 +230,7 @@ def cube_sine_2():
 	N = 10
 	k = 1
 	z0 = 10
+	phi_ini = math.pi / 2
 	z = [A * math.sin(2 * math.pi * i / N - phi_ini) + A + z0 for i in range(k * N)]
 	l = [cube(v.x, v.y, zx + zy).translate(v.x * i, v.y * j, 0) 
           for i, zx in enumerate(z) for j, zy in enumerate(z)]
