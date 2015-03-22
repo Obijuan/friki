@@ -17,20 +17,18 @@ class part(object):
 	"""Generic objects"""
 	
 	def __init__(self):
-		print("new part")
+		pass
 	
 	# overload +
 	def __add__(self, other):
 		"""Union operator"""
-		
-		print("Union {} + {}".format(self.obj.Label, other.obj.Label))
 
 		#-- Return the union of the two objects
 		return union([self, other])
 	
 	 #-- Overload - operator
 	def __sub__(self, other):
-		print("Difference")
+		"""Difference operator"""
 		return difference(self, other)
 	
 	def translate(self, x, y, z):
@@ -42,8 +40,14 @@ class part(object):
 		#-- Apply the translation (relative to the current position)
 		self.obj.Placement.Base += v
 	
-		print("hola")
 		return self
+	
+	#-- All subclases should implement the copy() method
+	def copy(self):
+		"""Return a copy of the object"""
+		
+		assert False, '[PYOOML] The object do NOT have a copy() method'
+		return 
 	
 	def _vector_from_args(self, x, y, z):
 		"""Utility function. It returns a vector with the x,y,z components"""
@@ -71,13 +75,29 @@ class union(part):
 		#-- Create the Freecad Object
 		doc = FreeCAD.activeDocument()
 		self.obj = doc.addObject("Part::MultiFuse","Union")
-
+		
+		#-- Save the list of parts
+		self.childs = items
+		
 		#-- Do the union!
-		l = [item.obj for item in items]
+		l = [item.obj for item in self.childs]
 		self.obj.Shapes = l
 
 		doc.recompute()
-		print("Union!")
+	
+	def __str__(self):
+		str_id = "[{}] Union:\n".format(self.obj.Label)
+		for child in self.childs:
+			str_id += "{}".format(child)
+		return str_id + '\n'
+	
+	def copy(self):
+		"""Return a copy of the object"""
+
+		#-- Create a new union
+		u = union(self.childs)
+		
+		return u		
 
 class difference(part):
 	"""Difference of two parts: base - tool"""
@@ -91,13 +111,12 @@ class difference(part):
 		#-- Create the Freecad Object
 		doc = FreeCAD.activeDocument()
 		self.obj = doc.addObject("Part::Cut","Difference")
-
+		
 		#-- Do the difference!
 		self.obj.Base = base.obj
 		self.obj.Tool = tool.obj
 
 		doc.recompute()
-		print("Union!")
 
 class cube(part):
 	"""Primitive Object: a cube"""
@@ -131,17 +150,22 @@ class cube(part):
 		
 		#-- Show the object!
 		FreeCAD.ActiveDocument.recompute()
-		print ("Cube Init!")
 	
 	def __str__(self):
-		str_id = "cube({}, {}, {}). Label: {}".format(self.obj.lx, self.obj.ly, 
-												      self.obj.lz, self.obj.Label)
+		str_id = "[{}] cube({}, {}, {})\n".format(self.obj.Label, self.obj.lx, 
+											 	    self.obj.ly, self.obj.lz)
 		return str_id
+
+	def copy(self):
+		"""Return a copy of the object"""
+
+		#-- Create a new cube
+		c = cube(self.lx, self.ly, self.lz)
+		return c
 	
 	@property
 	def lx(self):
 		"""Object length in x axis"""
-		print("Accesing lx...")
 		return self.obj.lx
 	
 	@lx.setter
@@ -153,7 +177,6 @@ class cube(part):
 	@property
 	def ly(self):
 		"""Object length in y axis"""
-		print("Accesing ly...")
 		return self.obj.ly
 	
 	@ly.setter
@@ -165,7 +188,6 @@ class cube(part):
 	@property
 	def lz(self):
 		"""Object length in z axis"""
-		print("Accesing lz...")
 		return self.obj.lz
 	
 	@lz.setter
@@ -178,12 +200,13 @@ class cube(part):
 		"""Build the object"""
 		
 		obj.Shape = Part.makeBox(obj.lx, obj.ly, obj.lz)
-		print ("Cube Execute!")
 	
 	def getDefaultDisplayMode(self):
 		"""VIEWPROVIDER..."""
-		print("getDefaultDisplayMode")
+		#print("getDefaultDisplayMode")
 		return "Flat Lines"
+
+
 
 def test_cube1():
 	#-- Place a single cube
@@ -284,6 +307,20 @@ def test_difference_2():
 	hole1 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2, 0, 0)
 	hole2 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2 + d1, 0, 0)
 	part = base - hole1 - hole2
+
+def test_cube_copy():
+	#-- The two cubes are equal
+	c1 = cube(10, 20, 30)
+	c2 = c1.copy()
+	
+	#-- Translate the copy. It should not affect cube 1
+	c2.translate(20, 0, 0)
+	
+	#-- Change cube 1. It should NOT affect cube 2
+	c1.lx = 5
+	
+	#-- Change cube 2. It should NOT affect cube 1
+	c2.lx = 20
 	
 	
 if __name__ == "__main__":
@@ -299,7 +336,8 @@ if __name__ == "__main__":
 	#cube_sine_2()
 	#cube_sine_3()
 	#test_difference_1()
-	test_difference_2()
+	#test_difference_2()
+	test_cube_copy()
 
 
 
