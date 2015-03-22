@@ -27,7 +27,12 @@ class part(object):
 
 		#-- Return the union of the two objects
 		return union([self, other])
-
+	
+	 #-- Overload - operator
+	def __sub__(self, other):
+		print("Difference")
+		return difference(self, other)
+	
 	def translate(self, x, y, z):
 		"""Translate the object"""
 		
@@ -73,7 +78,26 @@ class union(part):
 
 		doc.recompute()
 		print("Union!")
+
+class difference(part):
+	"""Difference of two parts: base - tool"""
+	
+	def __init__(self, base, tool):
+		"""Perform the difference of base - tool"""
 		
+		#-- Call the parent class constructor first
+		super(difference, self).__init__()
+		
+		#-- Create the Freecad Object
+		doc = FreeCAD.activeDocument()
+		self.obj = doc.addObject("Part::Cut","Difference")
+
+		#-- Do the difference!
+		self.obj.Base = base.obj
+		self.obj.Tool = tool.obj
+
+		doc.recompute()
+		print("Union!")
 
 class cube(part):
 	"""Primitive Object: a cube"""
@@ -225,18 +249,42 @@ def cube_sine_1():
 	union(l)
 
 def cube_sine_2():
-	v = FreeCAD.Vector(10, 10, 10)
-	A = 20
+	v = FreeCAD.Vector(5, 5, 5)
+	A = 10
 	N = 10
 	k = 1
-	z0 = 10
+	z0 = 5
 	phi_ini = math.pi / 2
 	z = [A * math.sin(2 * math.pi * i / N - phi_ini) + A + z0 for i in range(k * N)]
 	l = [cube(v.x, v.y, zx + zy).translate(v.x * i, v.y * j, 0) 
           for i, zx in enumerate(z) for j, zy in enumerate(z)]
-	union(l)
+	part = union(l)
+	return part
 
+def cube_sine_3():
+	p1 = cube_sine_2()
+	c =cube(50, 50, 50)
+	c.translate(0,0,10)
+	p2 = c - p1
+	
 
+def test_difference_1():
+	c1 = cube(30, 30, 2, center = True)
+	c2 = cube(5,5,20, center = True)
+	d = c1 - c2
+
+def test_difference_2():
+	w = 10
+	h = 3
+	d1 = 10
+	d2 = 3
+	N = 2
+	length = d1 * N
+	base = cube(length, w, h, center = True)
+	hole1 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2, 0, 0)
+	hole2 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2 + d1, 0, 0)
+	part = base - hole1 - hole2
+	
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -248,7 +296,10 @@ if __name__ == "__main__":
 	#test_stairs()
 	#test_stairs_2D()
 	#cube_sine_1()
-	cube_sine_2()
+	#cube_sine_2()
+	#cube_sine_3()
+	#test_difference_1()
+	test_difference_2()
 
 
 
