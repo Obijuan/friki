@@ -96,9 +96,15 @@ class union(part):
 	
 	def copy(self):
 		"""Return a copy of the object"""
-
+		
+		#-- Copy the childs
+		lc = [child.copy() for child in self.childs]
+		
 		#-- Create a new union
-		u = union(self.childs)
+		u = union(lc)
+		
+		#-- Copy the placement
+		u.obj.Placement = self.obj.Placement
 		
 		return u		
 
@@ -136,7 +142,13 @@ class difference(part):
 	def copy(self):
 		"""Return a copy of the object"""
 		
-		return difference(self.op1.copy(), self.op2.copy())
+		#-- Create the new difference
+		d = difference(self.op1.copy(), self.op2.copy())
+		
+		#-- Copy the placement
+		d.obj.Placement = self.obj.Placement
+		
+		return d
 
 class cube(part):
 	"""Primitive Object: a cube"""
