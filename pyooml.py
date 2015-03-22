@@ -12,6 +12,7 @@
 
 import FreeCAD
 import Part
+import copy
 
 class part(object):
 	"""Generic objects"""
@@ -112,11 +113,28 @@ class difference(part):
 		doc = FreeCAD.activeDocument()
 		self.obj = doc.addObject("Part::Cut","Difference")
 		
+		#-- Store the childs
+		self.op1 = base
+		self.op2 = tool
+		
 		#-- Do the difference!
-		self.obj.Base = base.obj
-		self.obj.Tool = tool.obj
+		self.obj.Base = self.op1.obj
+		self.obj.Tool = self.op2.obj	
+			
+		doc.recompute()
+
+	def __str__(self):
+		str_id = "[{}] Difference:\n".format(self.obj.Label)
+		str_id += "{}".format(self.op1)
+		str_id += "{}".format(self.op2)
+		return str_id + '\n'
 
 		doc.recompute()
+	
+	def copy(self):
+		"""Return a copy of the object"""
+		
+		return difference(self.op1.copy(), self.op2.copy())
 
 class cube(part):
 	"""Primitive Object: a cube"""
@@ -161,6 +179,9 @@ class cube(part):
 
 		#-- Create a new cube
 		c = cube(self.lx, self.ly, self.lz)
+		
+		#-- Set the same placement
+		c.obj.Placement = self.obj.Placement
 		return c
 	
 	@property
@@ -289,7 +310,6 @@ def cube_sine_3():
 	c =cube(50, 50, 50)
 	c.translate(0,0,10)
 	p2 = c - p1
-	
 
 def test_difference_1():
 	c1 = cube(30, 30, 2, center = True)
@@ -322,6 +342,21 @@ def test_cube_copy():
 	#-- Change cube 2. It should NOT affect cube 1
 	c2.lx = 20
 	
+def test_difference_copy():
+	#-- Create an object using differences
+	c1 = cube(30, 30, 2, center = True)
+	c2 = cube(5,5,20, center = True)
+	d1 = c1 - c2
+	
+	#-- Copy the object
+	d2 = d1.copy()
+	
+	#-- Translate the copy
+	d2.translate(50, 0, 0)
+	
+	#-- Change the inner part of the first object
+	c2.lx = 10
+
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -335,9 +370,9 @@ if __name__ == "__main__":
 	#cube_sine_1()
 	#cube_sine_2()
 	#cube_sine_3()
-	#test_difference_1()
+	test_difference_1()
 	#test_difference_2()
-	test_cube_copy()
+	#test_cube_copy()
 
 
 
