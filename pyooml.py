@@ -16,6 +16,8 @@ import copy
 
 class part(object):
 	"""Generic objects"""
+
+	version = '0.1'	
 	
 	def __init__(self):
 		pass
