@@ -13,6 +13,7 @@
 import FreeCAD
 import Part
 import copy
+import Draft
 
 class part(object):
 	"""Generic objects"""
@@ -198,6 +199,10 @@ class cube(part):
 		c.obj.Placement = self.obj.Placement
 		return c
 	
+	def clone(self):
+		pass
+		#return Draft.clone(self)
+	
 	@property
 	def lx(self):
 		"""Object length in x axis"""
@@ -371,6 +376,15 @@ def test_difference_copy():
 	#-- Change the inner part of the first object
 	c2.lx = 10
 
+def test_difference_3():
+	"""Test the difference  a - (b + c +d)"""
+	base = cube(40,40,3, center = True)
+	drill1 = cube(3,3,10, center = True)
+	drill2 = drill1.copy().translate(-10,0,0)
+	drill3 = drill1.copy().translate(10,0,0)
+	drills = drill1 + drill2 + drill3
+	
+	mypart = base - drills
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -384,9 +398,10 @@ if __name__ == "__main__":
 	#cube_sine_1()
 	#cube_sine_2()
 	#cube_sine_3()
-	test_difference_1()
+	#test_difference_1()
 	#test_difference_2()
 	#test_cube_copy()
+	test_difference_3()
 
 
 
