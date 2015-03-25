@@ -363,7 +363,7 @@ def test_difference_2():
 	base = cube(length, w, h, center = True)
 	hole1 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2, 0, 0)
 	hole2 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2 + d1, 0, 0)
-	part = base - hole1 - hole2
+	part1 = base - hole1 - hole2
 
 def test_cube_copy():
 	#-- The two cubes are equal
@@ -434,6 +434,18 @@ def test_difference_5():
 	arm2 = cube(4, 10, 100, center = True)
 	cross = arm1 + arm2
 	final = part1 - cross
+
+def test_mecano_part_1():
+	w = 10
+	h = 2
+	d1 = 10
+	d2 = 3
+	N = 2
+	length = d1 * N
+	base = cube(length, w, h, center = True)
+	drill1 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2, 0, 0)
+	drill2 = drill1.clone().translate(d1, 0, 0)
+	part1 = base - drill1 - drill2
 		
 	
 if __name__ == "__main__":
@@ -454,6 +466,7 @@ if __name__ == "__main__":
 	#test_difference_3()
 	#test_union_copy()
 	#test_difference_4()
-	test_difference_5()
+	#test_difference_5()
+	test_mecano_part_1()
 
 
