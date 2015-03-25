@@ -52,6 +52,12 @@ class part(object):
 		
 		assert False, '[PYOOML] The object do NOT have a copy() method'
 		return 
+
+	def clone(self):
+		"""Returns a clone of the object"""
+		duplicate = copy.copy(self)
+		duplicate.obj = Draft.clone(self.obj)
+		return duplicate
 	
 	def _vector_from_args(self, x, y, z):
 		"""Utility function. It returns a vector with the x,y,z components"""
@@ -197,11 +203,7 @@ class cube(part):
 		
 		#-- Set the same placement
 		c.obj.Placement = self.obj.Placement
-		return c
-	
-	def clone(self):
-		pass
-		#return Draft.clone(self)
+		return c		
 	
 	@property
 	def lx(self):
