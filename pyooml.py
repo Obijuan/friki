@@ -45,13 +45,13 @@ class part(object):
 		self.obj.Placement.Base += v
 	
 		return self
-	
-	#-- All subclases should implement the copy() method
+
 	def copy(self):
 		"""Return a copy of the object"""
-		
-		assert False, '[PYOOML] The object do NOT have a copy() method'
-		return 
+
+		c = copy.copy(self)
+		c.obj = FreeCAD.ActiveDocument.copyObject(self.obj)
+		return c
 
 	def clone(self):
 		"""Returns a clone of the object"""
@@ -104,14 +104,14 @@ class union(part):
 	def copy(self):
 		"""Return a copy of the object"""
 		
-		#-- Copy the childs
-		lc = [child.copy() for child in self.childs]
-		
 		#-- Create a new union
+		lc = [child.copy() for child in self.childs]
 		u = union(lc)
 		
 		#-- Copy the placement
 		u.obj.Placement = self.obj.Placement
+		
+		FreeCAD.activeDocument().recompute()
 		
 		return u		
 
@@ -193,17 +193,7 @@ class cube(part):
 	def __str__(self):
 		str_id = "[{}] cube({}, {}, {})\n".format(self.obj.Label, self.obj.lx, 
 											 	    self.obj.ly, self.obj.lz)
-		return str_id
-
-	def copy(self):
-		"""Return a copy of the object"""
-
-		#-- Create a new cube
-		c = cube(self.lx, self.ly, self.lz)
-		
-		#-- Set the same placement
-		c.obj.Placement = self.obj.Placement
-		return c		
+		return str_id		
 	
 	@property
 	def lx(self):
@@ -387,6 +377,15 @@ def test_difference_3():
 	drills = drill1 + drill2 + drill3
 	
 	mypart = base - drills
+
+def test_union_copy():
+	c1 = cube(10,10,10)
+	c2 = cube(10,10,10).translate(10,0,0)
+	u1 = (c1 + c2).translate(30,0,0)
+	
+	u2 = u1.copy()
+	u2.translate(30, 0, 0)
+	c1.ly = 20
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -404,6 +403,7 @@ if __name__ == "__main__":
 	#test_difference_2()
 	#test_cube_copy()
 	test_difference_3()
+	#test_union_copy()
 
 
 
