@@ -72,6 +72,12 @@ class part(object):
 
 		#-- Return the vector
 		return v
+	
+	def __getstate__(self):
+		return None
+ 
+	def __setstate__(self,state):
+		return None
 
 class union(part):
 	"""Union of objects"""
@@ -237,7 +243,7 @@ class cube(part):
 		"""VIEWPROVIDER..."""
 		#print("getDefaultDisplayMode")
 		return "Flat Lines"
-
+ 
 
 
 def test_cube1():
