@@ -163,6 +163,7 @@ class difference(part):
 		
 		return d
 
+
 class cube(part):
 	"""Primitive Object: a cube"""
 	
@@ -184,10 +185,11 @@ class cube(part):
 		self.obj.addProperty("App::PropertyLength","lx","Cube","Length in x axis").lx = v.x
 		self.obj.addProperty("App::PropertyLength","ly","Cube","Length in y axis").ly = v.y
 		self.obj.addProperty("App::PropertyLength","lz","Cube","Length in z axis").lz = v.z
+		self.obj.addProperty("App::PropertyBool", "center","Cube","Box centered").center = center
 
 		#-- Set the pos
-		if center == True:
-			self.obj.Placement.Base = FreeCAD.Vector(-v.x / 2., -v.y / 2., -v.z / 2.)
+		#if center == True:
+		#	self.obj.Placement.Base = FreeCAD.Vector(-v.x / 2., -v.y / 2., -v.z / 2.)
 
 		#-- Configure the object for working ok in the Freecad environment	
 		self.obj.Proxy = self
@@ -232,18 +234,36 @@ class cube(part):
 	def lz(self, value):
 		"""Attribute: Set the length in z axis"""
 		self.obj.lz = value
-		FreeCAD.ActiveDocument.recompute()	
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property	
+	def center(self):
+		"""How to draw the cube"""
+		return self.obj.center
+	
+	@center.setter
+	def center(self, value):
+		"""Set the center property"""
+		self.obj.center = value
+		FreeCAD.ActiveDocument.recompute()
 		
 	def execute(self, obj):
 		"""Build the object"""
 		
-		obj.Shape = Part.makeBox(obj.lx, obj.ly, obj.lz)
+		#-- Draw the box, chaging the position depending on the center property
+		if obj.center == True:
+			off = FreeCAD.Vector(-obj.lx.Value/2., -obj.ly.Value/2., -obj.lz.Value/2.)
+			b = Part.makeBox(obj.lx, obj.ly, obj.lz, FreeCAD.Vector(off.x,off.y,off.z))
+		else:
+			b = Part.makeBox(obj.lx, obj.ly, obj.lz)
+		
+		#-- Asign the shape
+		obj.Shape = b
 	
 	def getDefaultDisplayMode(self):
 		"""VIEWPROVIDER..."""
 		#print("getDefaultDisplayMode")
 		return "Flat Lines"
- 
 
 
 def test_cube1():
