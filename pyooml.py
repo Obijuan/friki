@@ -20,8 +20,14 @@ class part(object):
 
 	version = '0.1'	
 	
-	def __init__(self):
-		pass
+	def __init__(self, obj):
+		
+		#-- Configure the object for working ok in the Freecad environment	
+		obj.Proxy = self
+		obj.ViewObject.Proxy = self
+		
+		#-- Show the object!
+		FreeCAD.ActiveDocument.recompute()
 	
 	# overload +
 	def __add__(self, other):
@@ -59,6 +65,12 @@ class part(object):
 		duplicate.obj = Draft.clone(self.obj)
 		return duplicate
 	
+	def getDefaultDisplayMode(self):
+		"""VIEWPROVIDER..."""
+		#print("getDefaultDisplayMode")
+		return "Flat Lines"
+	
+	
 	def _vector_from_args(self, x, y, z):
 		"""Utility function. It returns a vector with the x,y,z components"""
 		
@@ -84,13 +96,9 @@ class union(part):
 	
 	def __init__(self, items):
 		"""items = list of parts to perform union"""
-
-		#-- Call the parent class constructor first
-		super(union, self).__init__()
 		
 		#-- Create the Freecad Object
-		doc = FreeCAD.activeDocument()
-		self.obj = doc.addObject("Part::MultiFuse","Union")
+		self.obj = FreeCAD.activeDocument().addObject("Part::MultiFuse","Union")
 		
 		#-- Save the list of parts
 		self.childs = items
@@ -98,8 +106,8 @@ class union(part):
 		#-- Do the union!
 		l = [item.obj for item in self.childs]
 		self.obj.Shapes = l
-
-		doc.recompute()
+		
+		FreeCAD.activeDocument().recompute()
 	
 	def __str__(self):
 		str_id = "[{}] Union:\n".format(self.obj.Label)
@@ -127,9 +135,6 @@ class difference(part):
 	def __init__(self, base, tool):
 		"""Perform the difference of base - tool"""
 		
-		#-- Call the parent class constructor first
-		super(difference, self).__init__()
-		
 		#-- Create the Freecad Object
 		doc = FreeCAD.activeDocument()
 		self.obj = doc.addObject("Part::Cut","Difference")
@@ -141,7 +146,7 @@ class difference(part):
 		#-- Do the difference!
 		self.obj.Base = self.op1.obj
 		self.obj.Tool = self.op2.obj	
-			
+		
 		doc.recompute()
 
 	def __str__(self):
@@ -163,6 +168,20 @@ class difference(part):
 		
 		return d
 
+class cylinder(part):
+	"""Primitive Object: a cylinder"""
+	
+	def __init__(self, r = 5, h = 30, d = None):
+		"""Create a primitive cylinder:
+			 r: radius or d: diameter
+			 h: height
+		"""
+		
+		#-- Create the Freecad Object
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::Cylinder","Cylinder")
+		
+		FreeCAD.activeDocument().recompute()
+			 
 
 class cube(part):
 	"""Primitive Object: a cube"""
@@ -172,9 +191,6 @@ class cube(part):
 			lx: length in x axis
 			ly: length in y axis
 			lz: length in z axis"""
-		
-		#-- Call the parent class constructor first
-		super(cube, self).__init__()
 		
 		v = self._vector_from_args(lx, ly, lz)
 
@@ -186,17 +202,9 @@ class cube(part):
 		self.obj.addProperty("App::PropertyLength","ly","Cube","Length in y axis").ly = v.y
 		self.obj.addProperty("App::PropertyLength","lz","Cube","Length in z axis").lz = v.z
 		self.obj.addProperty("App::PropertyBool", "center","Cube","Box centered").center = center
-
-		#-- Set the pos
-		#if center == True:
-		#	self.obj.Placement.Base = FreeCAD.Vector(-v.x / 2., -v.y / 2., -v.z / 2.)
-
-		#-- Configure the object for working ok in the Freecad environment	
-		self.obj.Proxy = self
-		self.obj.ViewObject.Proxy = self
 		
-		#-- Show the object!
-		FreeCAD.ActiveDocument.recompute()
+		#-- Call the parent class constructor
+		super(cube, self).__init__(self.obj)
 	
 	def __str__(self):
 		str_id = "[{}] cube({}, {}, {})\n".format(self.obj.Label, self.obj.lx, 
@@ -259,11 +267,10 @@ class cube(part):
 		
 		#-- Asign the shape
 		obj.Shape = b
-	
-	def getDefaultDisplayMode(self):
-		"""VIEWPROVIDER..."""
-		#print("getDefaultDisplayMode")
-		return "Flat Lines"
+
+
+
+
 
 
 def test_cube1():
