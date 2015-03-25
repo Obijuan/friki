@@ -386,6 +386,29 @@ def test_union_copy():
 	u2 = u1.copy()
 	u2.translate(30, 0, 0)
 	c1.ly = 20
+
+def test_difference_4():
+	""" Test the difference (a - b) + (c -d)"""
+	
+	base1 = cube(30,30,5,center = True)
+	drill1 = cube(5,5,20, center = True)
+	base2 = cube(5,30,30,center = True)
+	drill2 = cube(20,5,5, center = True)
+	
+	part1 = (base1 - drill1) + (base2 - drill2).translate(-15,0,15)
+
+def test_difference_5():
+	"""Test the difference (a + b) - (c + d)"""
+	
+	base1 = cube(30, 30, 5, center = True)
+	base2 = cube(20,20,30, center = True).translate(0, 0, 15)
+	part1 = base1 + base2
+	
+	arm1 = cube(10,4, 100, center = True)
+	arm2 = cube(4, 10, 100, center = True)
+	cross = arm1 + arm2
+	final = part1 - cross
+		
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -402,8 +425,9 @@ if __name__ == "__main__":
 	#test_difference_1()
 	#test_difference_2()
 	#test_cube_copy()
-	test_difference_3()
+	#test_difference_3()
 	#test_union_copy()
-
+	#test_difference_4()
+	test_difference_5()
 
 
