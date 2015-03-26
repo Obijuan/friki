@@ -171,17 +171,47 @@ class difference(part):
 class cylinder(part):
 	"""Primitive Object: a cylinder"""
 	
-	def __init__(self, r = 5, h = 30, d = None):
+	def __init__(self, r = 5, h = 30, d = None, angle = 360, center = False):
 		"""Create a primitive cylinder:
 			 r: radius or d: diameter
 			 h: height
 		"""
 		
 		#-- Create the Freecad Object
-		self.obj = FreeCAD.ActiveDocument.addObject("Part::Cylinder","Cylinder")
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cylinder")
+		self.obj.addProperty("App::PropertyBool", "center","Cylinder","Cylinder centered").center = False
+		self.obj.addProperty("App::PropertyLength","r","Cylinder","Radius").r = r
+		self.obj.addProperty("App::PropertyLength","h","Cylinder","Height").h = h
+		self.obj.addProperty("App::PropertyAngle","angle","Cylinder","Section angle").angle = angle
+
+		#-- Set the cylinder parameters
+		if d == None:
+			self.obj.r = r
+		else:
+			self.obj.r = d / 2.
 		
-		FreeCAD.activeDocument().recompute()
-			 
+		self.obj.h = h
+		
+		#-- Call the parent class constructor
+		super(cylinder, self).__init__(self.obj)
+	
+	#-- TODO: Add the properties to the main pyooml object!!!!
+	
+	def execute(self, obj):
+		"""Build the object"""
+		
+		#-- Draw the box, chaging the position depending on the center property
+		if obj.center == True:
+			off_z = -obj.h.Value / 2.
+			b = Part.makeCylinder(obj.r, obj.h, 
+                                  FreeCAD.Vector(0,0,off_z), FreeCAD.Vector(0,0,1), obj.angle)
+		else:
+			b = Part.makeCylinder(obj.r, obj.h, 
+                                  FreeCAD.Vector(0,0,0), FreeCAD.Vector(0,0,1), obj.angle)
+		
+		#-- Asign the shape
+		obj.Shape = b
+
 
 class cube(part):
 	"""Primitive Object: a cube"""
