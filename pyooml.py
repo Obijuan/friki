@@ -179,7 +179,7 @@ class cylinder(part):
 		
 		#-- Create the Freecad Object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cylinder")
-		self.obj.addProperty("App::PropertyBool", "center","Cylinder","Cylinder centered").center = False
+		self.obj.addProperty("App::PropertyBool", "center","Cylinder","Cylinder centered").center = center
 		self.obj.addProperty("App::PropertyLength","r","Cylinder","Radius").r = r
 		self.obj.addProperty("App::PropertyLength","h","Cylinder","Height").h = h
 		self.obj.addProperty("App::PropertyAngle","angle","Cylinder","Section angle").angle = angle
@@ -195,7 +195,60 @@ class cylinder(part):
 		#-- Call the parent class constructor
 		super(cylinder, self).__init__(self.obj)
 	
-	#-- TODO: Add the properties to the main pyooml object!!!!
+	@property
+	def r(self):
+		"""Cylinder radius"""
+		return self.obj.r
+	
+	@r.setter
+	def r(self, value):
+		"""Attribute: cylinder radius"""
+		self.obj.r = value
+		FreeCAD.ActiveDocument.recompute()	
+	
+	@property
+	def h(self):
+		"""Cylinder height"""
+		return self.obj.h
+	
+	@h.setter
+	def h(self, value):
+		"""Attribute: cylinder height"""
+		self.obj.h = value
+		FreeCAD.ActiveDocument.recompute()	
+	
+	@property
+	def center(self):
+		"""Cylinder centered"""
+		return self.obj.center
+	
+	@center.setter
+	def center(self, value):
+		"""Attribute: cylinder centered"""
+		self.obj.center = value
+		FreeCAD.ActiveDocument.recompute()	
+	
+	@property
+	def angle(self):
+		"""Cylinder angle"""
+		return self.obj.angle
+	
+	@angle.setter
+	def angle(self, value):
+		"""Attribute: cylinder angle"""
+		self.obj.angle = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property
+	def d(self):
+		"""Cylinder diameter"""
+		return self.obj.r * 2.
+	
+	@d.setter
+	def d(self, value):
+		"""Attribute: cylinder diameter"""
+		self.obj.r = value / 2.
+		FreeCAD.ActiveDocument.recompute()		
 	
 	def execute(self, obj):
 		"""Build the object"""
