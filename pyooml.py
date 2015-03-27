@@ -107,6 +107,16 @@ class part(object):
 		duplicate.obj = Draft.clone(self.obj)
 		return duplicate
 	
+	@property
+	def T(self):
+		"""Transformation Matrix"""
+		return self.obj.Placement.toMatrix()
+	
+	@T.setter
+	def T(self, value):
+		"""Transformation Matrix"""
+		self.obj.Placement = FreeCAD.Placement(value)
+	
 	def getDefaultDisplayMode(self):
 		"""VIEWPROVIDER..."""
 		#print("getDefaultDisplayMode")
@@ -578,6 +588,18 @@ def test_mecano_part_1():
 	drill1 = cube(d2, d2, 3*h, center = True).translate(-length/2 + d1/2, 0, 0)
 	drill2 = drill1.clone().translate(d1, 0, 0)
 	part1 = base - drill1 - drill2
+
+def test_T_1():
+	"""Testing the .T property"""
+	c = cube(10, 10, 10)	
+	c.rotz(45).rotx(30).translate(20, 0, 0).roty(40)
+	
+	#-- Create a new cubo
+	c1 = cube(30, 30, 2)
+
+	#-- Assign the same transformation
+	c1.T = c.T
+	
 		
 	
 if __name__ == "__main__":
@@ -599,6 +621,7 @@ if __name__ == "__main__":
 	#test_union_copy()
 	#test_difference_4()
 	#test_difference_5()
-	test_mecano_part_1()
+	#test_mecano_part_1()
+	test_T_1()
 
 
