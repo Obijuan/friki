@@ -14,6 +14,7 @@ import FreeCAD
 import Part
 import copy
 import Draft
+import math
 
 class part(object):
 	"""Generic objects"""
@@ -93,6 +94,30 @@ class part(object):
 		
 		#-- Apply the new transformation to the current transform
 		self.obj.Placement = FreeCAD.Placement(matrix * M)
+	
+	def orientate(self, x, y = None, z = None, vref = FreeCAD.Vector(0,0,1)):
+		"""Orientate the object so that the reference vector (vref) is pointing
+		   in the same direction thant the given vector (x,y,z)"""
+		v = self._vector_from_args(x, y, z)
+
+		#-- Special cases. Null vector. Ignore
+		if v.Length == 0:
+			return
+		
+		#-- Special case: Vector in the z axis, poiting to the negative
+		if v.x == 0 and v.y==0 and v.z < 0:
+			raxis = App.Vector(1, 0, 0)
+		else:
+			raxis = vref.cross(v)
+		
+		#-- Calculate the rotation angle (in degrees)
+		angle = math.degrees(vref.getAngle(v))
+		
+		#-- Rotate!
+		self.obj.Placement.Rotation = FreeCAD.Rotation(raxis, angle)
+		
+		#FreeCAD.ActiveDocument.recompute()
+		return self
 
 	def copy(self):
 		"""Return a copy of the object"""
