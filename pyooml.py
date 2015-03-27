@@ -428,9 +428,32 @@ class cube(part):
 		#-- Asign the shape
 		obj.Shape = b
 
+class sphere(part):
+	"""Primitive object: a sphere"""
+	
+	def __init__(self, r):
+		"""Create a primitive sphere of given r radius"""
+		print("sphere")
+		
+		#-- Create the Freecad Object
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::Sphere","Sphere","Sphere")
+		
+		#-- Asign the radius
+		self.r = r
+		
+		FreeCAD.activeDocument().recompute()
+		return
 
-
-
+	@property
+	def r(self):
+		"""Object radius"""
+		return self.obj.Radius
+	
+	@r.setter
+	def r(self, value):
+		"""Object radius"""
+		self.obj.Radius = value
+		FreeCAD.ActiveDocument.recompute()	
 
 
 def test_cube1():
@@ -625,7 +648,14 @@ def test_T_1():
 	#-- Assign the same transformation
 	c1.T = c.T
 	
-		
+def test_spheres_1():
+	"""Testing spheres: draw them in a sinusoidal path"""
+	r = 0.5
+	N = 20
+	[sphere(r = r).translate(2 * r * i, 0, 10*r * math.sin(2*math.pi*i/N)) 
+     for i in range(N)]
+
+
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -647,6 +677,7 @@ if __name__ == "__main__":
 	#test_difference_4()
 	#test_difference_5()
 	#test_mecano_part_1()
-	test_T_1()
+	#test_T_1()
+	test_spheres_1()
 
 
