@@ -68,6 +68,21 @@ class part(object):
 		
 		return self
 	
+	def rotz(self, ang):
+		"""Rotate the object about the z axis, a given angle (Relative rotation)"""
+		self.rotate(v = FreeCAD.Vector(0, 0, 1), ang = ang)
+		return self
+	
+	def rotx(self, ang):
+		"""Rotate the object about the x axis, a given angle (Relative rotation)"""
+		self.rotate(v = FreeCAD.Vector(1, 0, 0), ang = ang)
+		return self
+	
+	def roty(self, ang):
+		"""Rotate the object about the y axis, a given angle (Relative rotation)"""
+		self.rotate(v = FreeCAD.Vector(0, 1, 0), ang = ang)
+		return self
+	
 	def transform(self, matrix):
 		"""Apply the transformation given by the homogeneous matrix 4x4
 		   The matrix is multiplied by the current transformation
