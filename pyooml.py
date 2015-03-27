@@ -51,6 +51,33 @@ class part(object):
 		self.obj.Placement.Base += v
 	
 		return self
+	
+	def rotate(self, v = FreeCAD.Vector(0, 0, 1), ang = 0):
+		"""Rotatle the object around the axis given by v, and angle ang (in degrees)
+		   Itis a relative transformation"""
+		
+		#-- Create the placement
+		p = FreeCAD.Placement()
+		p.Rotation = FreeCAD.Rotation(v, ang)
+		
+		#-- Convert to a Matrix
+		M = p.toMatrix()
+		
+		#-- Apply the transformation
+		self.transform(M)
+		
+		return self
+	
+	def transform(self, matrix):
+		"""Apply the transformation given by the homogeneous matrix 4x4
+		   The matrix is multiplied by the current transformation
+           so, the transformation is relative"""
+		
+		#-- Get the current transform matrix
+		M = self.obj.Placement.toMatrix()
+		
+		#-- Apply the new transformation to the current transform
+		self.obj.Placement = FreeCAD.Placement(matrix * M)
 
 	def copy(self):
 		"""Return a copy of the object"""
