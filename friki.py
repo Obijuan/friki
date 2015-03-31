@@ -366,68 +366,17 @@ def test_line():
 	ViewProviderLine(a.ViewObject)
 	App.ActiveDocument.recompute()
 
-class Generic:
-	def __init__(self, obj):
-		obj.addProperty("App::PropertyLength","Length","Link","Length of the link in x").Length=1.0
-		obj.Proxy = self
-   
-	def execute(self, fp):
-		fp.Shape = Part.makeBox(fp.Length, fp.Length/2., fp.Length/2.)
-		print("Link execute")
-
-class ViewProviderGeneric:
-   def __init__(self, obj):
-      obj.Proxy = self
-
-   def getDefaultDisplayMode(self):
-      return "Flat Lines"
-
-class xcube(object):
-	def __init__(self):
-		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Xcube")
-		self.obj.addProperty("App::PropertyLength","Length","Xcube","testing...").Length=1.0
-		self.obj.Proxy = self
-		self.obj.ViewObject.Proxy = self
-		FreeCAD.ActiveDocument.recompute()
-		print("xcube init!")
-	
-	@property
-	def Length(self):
-		"""Object length"""
-		print("Length.......")
-		return self.obj.Length
-	
-	@Length.setter
-	def Length(self, value):
-		"""Attribute: Set the Length"""
-		self.obj.Length = value
-		FreeCAD.ActiveDocument.recompute()
-
-	def execute(self, fp):
-		fp.Shape = Part.makeBox(fp.Length, fp.Length/2., fp.Length/2.)
-		print("Link execute")
-	
-	def onChanged(self, fp, prop):
-		"'''Do something when a property has changed'''"
-		FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")	
-		
-
-	def getDefaultDisplayMode(self):
-		print("getDefaultDisplayMode")
-		return "Flat Lines"
-
-
 
 if __name__ == "__main__":
 	print ("Hola!")
+	test1()
 	#barrientos_pag79_ex3_1()
 	#test_line()
 	#a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Generic")
 	#Generic(a)
 	#ViewProviderGeneric(a.ViewObject)
 	#App.ActiveDocument.recompute()
-	c = xcube()
-	print(c.Length)
+	
 #---- Doc
 # http://www.freecadweb.org/wiki/index.php?title=Scripted_objects
 
