@@ -455,7 +455,47 @@ class sphere(part):
 		self.obj.Radius = value
 		FreeCAD.ActiveDocument.recompute()	
 
+class svector(part):
+	"""Solid Vector class"""
+	def __init__(self, x, y = None, z = None):
+		"""Create a solid vector. From the origin to the point (x,y,z)"""
+		
+		v = self._vector_from_args(x, y, z)
 
+		#-- Create the Freecad Object
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Vector")
+
+		#--Add properties
+		#self.obj.addProperty("App::PropertyLength","lx","Cube","Length in x axis").lx = v.x
+
+		#-- Arrow length
+		self.l_arrow = 2
+		
+		#-- Vector diameter
+		self.d = 0.5
+		
+		#-- Call the parent class constructor
+		super(svector, self).__init__(self.obj)	
+	
+	def execute(self, obj):
+		"""Build the object"""
+		print("Draw the vector!")
+		self._vectorz()
+		
+	def _vectorz(self, l = 10):
+		"""Draw a vector pointing in the z direction
+		   l: Length"""
+		
+		#-- Correct the length
+		if (l < self.l_arrow):
+			l_arrow = l/2
+		else:
+			l_arrow = self.l_arrow
+		
+		
+			
+		
+#---------------------------  Examples ------------------------------------
 def test_cube1():
 	#-- Place a single cube
 	cube()
