@@ -731,9 +731,18 @@ def test_spheres_1():
 from FreeCAD import Vector
 
 def test_vector_1():
+	print("Test")
 	v1 = Vector(10, 0, 0)
 	v2 = Vector(0, 10, 0)
 	v3 = Vector(0, 0, 10)
+	
+	sv1 = svector(v1)
+	sv2 = svector(v2)
+	sv3 = svector(v3)
+	sv4 = svector(v1 + v2)
+	
+	sv5 = svector(v1).translate(v2)
+	sv6 = svector(v2).translate(v1)
 
 
 	
