@@ -256,15 +256,6 @@ def matrix_rotx(ang):
                              0, math.sin(rad),  math.cos(rad), 0,
                              0,  0,               0,            1)
 
-def test3():
-	frame()
-	ice(cube(10, 10, 10))
-	v1 = FreeCAD.Vector(10, 10, 10)
-	v2 = FreeCAD.Vector(10, 10, 0)
-	v3 = FreeCAD.Vector(0, 0, 10)
-	yellow(vector(v1))
-	vector(v2)
-	translate(vector(v3), v2)
 
 def test4():
 	r1 = FreeCAD.Vector(20,20,20)

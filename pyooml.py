@@ -873,13 +873,23 @@ def test_vector_1():
 	sv5 = svector(v1).translate(v2)
 	sv6 = svector(v2).translate(v1)
 
-#-- Examples from the friki library
+#----------- Examples from the friki library
 def test_friki_1():
 	v = Vector(10,10,10)
 	p = point(20, 20,20)
 	f1 = frame()
 	f2 = frame().translate(20,0,0)
 	
+def test_friki_3():
+	frame()
+	cube(10, 10, 10).ice(80)
+	
+	v1 = Vector(10, 10, 10)
+	v2 = Vector(10, 10, 0)
+	v3 = Vector(0, 0, 10)
+	svector(v1).color("yellow")
+	svector(v2)
+	svector(v3).translate(v2)
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -904,6 +914,7 @@ if __name__ == "__main__":
 	#test_T_1()
 	#test_spheres_1()
 	#test_vector_1()
-	test_friki_1()
+	#test_friki_1()
+	test_friki_3()
 
 
