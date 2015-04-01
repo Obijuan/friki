@@ -42,11 +42,11 @@ class part(object):
 		"""Difference operator"""
 		return difference(self, other)
 	
-	def translate(self, x, y, z):
+	def translate(self, x, y=None, z=None):
 		"""Translate the object"""
 		
 		#-- Get the translation vector
-		v = FreeCAD.Vector(x, y, z)
+		v = self._vector_from_args(x, y, z)
 		
 		#-- Apply the translation (relative to the current position)
 		self.obj.Placement.Base += v
@@ -728,6 +728,13 @@ def test_spheres_1():
 	[sphere(r = r).translate(2 * r * i, 0, 10*r * math.sin(2*math.pi*i/N)) 
      for i in range(N)]
 
+from FreeCAD import Vector
+
+def test_vector_1():
+	v1 = Vector(10, 0, 0)
+	v2 = Vector(0, 10, 0)
+	v3 = Vector(0, 0, 10)
+
 
 	
 if __name__ == "__main__":
@@ -751,6 +758,7 @@ if __name__ == "__main__":
 	#test_difference_5()
 	#test_mecano_part_1()
 	#test_T_1()
-	test_spheres_1()
+	#test_spheres_1()
+	test_vector_1()
 
 
