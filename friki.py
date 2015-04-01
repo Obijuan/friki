@@ -12,6 +12,7 @@ import math
 
 
 #-- Draw a vector in the z axis
+#--- MIGRATED TO PYOOOML
 def vectorz(l = 10, l_arrow = 2, d = 0.5, mark = False, show = True):
 	"""Draw a vector in the z axis. Parameters:
 		 l : Lenght
@@ -35,6 +36,7 @@ def vectorz(l = 10, l_arrow = 2, d = 0.5, mark = False, show = True):
 	#-- Return de vector z
 	return union
 
+#-- MIGRATED TO PYOOML
 def orientate(part, v, vref = FreeCAD.Vector(0, 0, 1)):
 
 	#-- Special cases. Null vector. Ignore
@@ -72,6 +74,7 @@ def ice(obj, trans = 50):
 def yellow(obj):
 	obj.ViewObject.ShapeColor = (1.0, 1.0, 0.0)
 
+#-- MIGRATED TO PYOOML
 def vector(x, y = None, z = None, l = None):
 
 	#-- Function overloading. x is mandatory
@@ -162,7 +165,7 @@ def point(x, y = None, z = None, d = 1.0):
 
 	return p
 
-
+#-- MIGRATED TO PYOOML
 def cube(lx = 10, ly = 10, lz = 10, center = False):
 	print("Cube: {}, center =  {}".format([lx, ly, lz], center))
 
@@ -182,6 +185,7 @@ def cube(lx = 10, ly = 10, lz = 10, center = False):
 	doc.recompute()
 	return c
 
+#--- MIGRATED TO PYOOML
 def cylinder(r = 5, h = 10, center = True):
 	doc = FreeCAD.ActiveDocument
 	c = doc.addObject("Part::Cylinder","Cylinder")
@@ -190,14 +194,15 @@ def cylinder(r = 5, h = 10, center = True):
 	c.Radius = r
 	c.Height = h
 	c.Angle = 360.0
-	
+
 	#-- Set the pos
 	if center == True:
 		c.Placement.Base.z = -h/2.
-	
+
 	doc.recompute()
 	return c
 
+#-- MIGRATED TO PYOOML
 def difference(obj1, obj2):
 	doc = FreeCAD.ActiveDocument
 	cut = doc.addObject("Part::Cut","Cut")
@@ -208,8 +213,9 @@ def difference(obj1, obj2):
 	doc.recompute()
 	return cut
 
+#-- MIGRATED TO PYOOML
 def translate(obj1, x, y = None, z = None):
-	
+
 	#-- Function overloading. x is mandatory
 	if y == None and z == None:
 		#-- the first argument is an App.Vector
@@ -217,9 +223,10 @@ def translate(obj1, x, y = None, z = None):
 	else:
 		#-- The three components are given
 		v = FreeCAD.Vector(x, y, z)
-	
+
 	obj1.Placement.Base = FreeCAD.Vector(v)
 
+#--- MIGRATED TO PYOOML
 def transform(obj, matrix):
 	#-- Get the current transform matrix
 	M = obj.Placement.toMatrix()
@@ -229,7 +236,7 @@ def transform(obj, matrix):
 
 def matrix_translate(x, y=None, z=None):
 	"""Homogeneous matrix for translation"""
-	
+
 	#-- Function overloading. x is mandatory
 	if y == None and z == None:
 		#-- the first argument is an App.Vector
@@ -237,7 +244,7 @@ def matrix_translate(x, y=None, z=None):
 	else:
 		#-- The three components are given
 		v = FreeCAD.Vector(x, y, z)
-	
+
 	return  FreeCAD.Matrix(1, 0, 0,  v.x,
                              0, 1, 0, v.y,
                              0, 0, 1, v.z,
@@ -284,10 +291,10 @@ def test4():
 	r1 = FreeCAD.Vector(20,20,20)
 	r2 = FreeCAD.Vector(10,10,4)
 	translate(vector(r2), r1)
-	yellow(vector(r1))	
+	yellow(vector(r1))
 	frame()
 	f = frame()
-	
+
 	translate(f, r1)
 
 def test5():
@@ -296,7 +303,7 @@ def test5():
 	v2 = FreeCAD.Vector(30, 0, 10)
 	l2 = v2.Length
 	frame(l = 20)
-	
+
 	#-- Projections of the link vector on the z=0 plane
 	v1p = FreeCAD.Vector(v1.x, v1.y, 0)
 	v2p = FreeCAD.Vector(v2.x, v2.y, 0)
@@ -307,10 +314,10 @@ def test5():
 	#-- Draw link2
 	translate(frame(l = 20), v1)
 	translate( vector(v2), v1)
-	
+
 	#-- Frame in the robot end
 	translate( frame(l = 20), v1+v2)
-	
+
 	#-- Draw the proyections (to see the robot better)
 	vector(v1p)
 	translate(vector(v2p), v1p)
@@ -332,10 +339,10 @@ def barrientos_pag79_ex3_1():
 	f1 = frame()
 	M = matrix_translate(p)
 	transform(f1,M)
-	
+
 	r = FreeCAD.Vector(-2, 7, 3)
 	transform(vector(r), M)
-	
+
 	r0 = M.multiply(r)
 	yellow(vector(r0))
 	print("r0: {}".format(r0))
@@ -346,7 +353,7 @@ class Line:
          obj.addProperty("App::PropertyVector","p1","Line","Start point")
          obj.addProperty("App::PropertyVector","p2","Line","End point").p2=FreeCAD.Vector(100,0,0)
          obj.Proxy = self
-   
+
     def execute(self, fp):
         '''"Print a short message when doing a recomputation, this method is mandatory" '''
         fp.Shape = Part.makeLine(fp.p1,fp.p2)
@@ -376,11 +383,6 @@ if __name__ == "__main__":
 	#Generic(a)
 	#ViewProviderGeneric(a.ViewObject)
 	#App.ActiveDocument.recompute()
-	
+
 #---- Doc
 # http://www.freecadweb.org/wiki/index.php?title=Scripted_objects
-
-
-
-
-
