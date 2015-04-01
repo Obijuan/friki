@@ -165,6 +165,24 @@ class part(object):
 		
 		self.obj.ViewObject.ShapeColor = col
 		return self
+
+	def ice(self, level = 50):
+		"""Set the transparency level 0 - 100"""
+		self.transparency = level
+	
+	def solid(self):
+		"""Set the transparency level to 0"""
+		self.transparency = 0
+
+	@property
+	def transparency(self):
+		"""Read the transparency level 0 - 100"""
+		return self.obj.ViewObject.Transparency
+	
+	@transparency.setter
+	def transparency(self, value):
+		"""Set the transparency level 0 - 100"""
+		self.obj.ViewObject.Transparency = value
 	
 	@property
 	def label(self):
