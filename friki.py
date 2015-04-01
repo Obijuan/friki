@@ -271,12 +271,6 @@ def test1():
 	#-- See the Current Matrix
 	f.Placement.toMatrix()
 
-#-- Testing the difference
-def test2():
-	box = cube(10, 10, 10, center = True)
-	cyl = cylinder(r = 2, h = 50)
-	cut = difference(box, cyl)
-
 def test3():
 	frame()
 	ice(cube(10, 10, 10))
