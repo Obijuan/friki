@@ -877,6 +877,9 @@ def test_vector_1():
 def test_friki_1():
 	v = Vector(10,10,10)
 	p = point(20, 20,20)
+	f1 = frame()
+	f2 = frame().translate(20,0,0)
+	
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -900,6 +903,7 @@ if __name__ == "__main__":
 	#test_mecano_part_1()
 	#test_T_1()
 	#test_spheres_1()
-	test_vector_1()
+	#test_vector_1()
+	test_friki_1()
 
 

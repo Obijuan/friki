@@ -256,21 +256,6 @@ def matrix_rotx(ang):
                              0, math.sin(rad),  math.cos(rad), 0,
                              0,  0,               0,            1)
 
-def test1():
-	print("Hola")
-	v = vector(10,10,10)
-	p = point(20, 20,20)
-	frame()
-	f = frame()
-
-	#-- Use a Matrix for changing the frame placement
-	M = FreeCAD.Matrix()
-	M.move(30, 0, 0)
-	f.Placement = FreeCAD.Placement(M)
-
-	#-- See the Current Matrix
-	f.Placement.toMatrix()
-
 def test3():
 	frame()
 	ice(cube(10, 10, 10))
@@ -370,7 +355,6 @@ def test_line():
 
 if __name__ == "__main__":
 	print ("Hola!")
-	test1()
 	#barrientos_pag79_ex3_1()
 	#test_line()
 	#a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Generic")
