@@ -583,13 +583,13 @@ class frame(part):
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::Compound","Frame")
 		
 		#-- Build the frame
-		self.x_axis = svector(1, 0, 0, l = l)
+		self.x_axis = svector(1, 0, 0, l = l).color("red")
 		self.x_axis.label = "X axis"
 		
-		self.y_axis = svector(0, 1, 0, l = l)
+		self.y_axis = svector(0, 1, 0, l = l).color("green")
 		self.y_axis.label = "Y axis"
 		
-		self.z_axis = svector(0, 0, 1, l = l)
+		self.z_axis = svector(0, 0, 1, l = l).color("blue")
 		self.z_axis.label = "Z axis"
 		
 		self.origin = sphere(r = 0.5)
