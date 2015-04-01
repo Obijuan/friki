@@ -495,7 +495,6 @@ class sphere(part):
 	
 	def __init__(self, r):
 		"""Create a primitive sphere of given r radius"""
-		print("sphere")
 		
 		#-- Create the Freecad Object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::Sphere","Sphere","Sphere")
@@ -623,7 +622,40 @@ class frame(part):
 		FreeCAD.activeDocument().recompute()
 		return
 
+class point(part):
+	"""Solid point object"""
+	
+	def __init__(self, x, y = None, z = None, r = 0.5):
+		"""Create a point"""
+		
+		#-- Store the position vector
+		self.pos = self._vector_from_args(x, y, z)
 
+		#-- Create the Freecad Object
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::Sphere","Point","Point")
+		
+		#-- Asign the radius
+		self.r = r
+
+		#-- Place the point on the given coordinates
+		self.translate(self.pos)	
+
+		#-- Default display mode
+		self.obj.ViewObject.DisplayMode = 'Shaded'	
+
+		FreeCAD.activeDocument().recompute()
+		return
+
+	@property
+	def r(self):
+		"""Object radius"""
+		return self.obj.Radius
+	
+	@r.setter
+	def r(self, value):
+		"""Object radius"""
+		self.obj.Radius = value
+		FreeCAD.ActiveDocument.recompute()
 		
 #---------------------------  Examples ------------------------------------
 def test_cube1():
@@ -841,7 +873,10 @@ def test_vector_1():
 	sv5 = svector(v1).translate(v2)
 	sv6 = svector(v2).translate(v1)
 
-
+#-- Examples from the friki library
+def test_friki_1():
+	v = Vector(10,10,10)
+	p = point(20, 20,20)
 	
 if __name__ == "__main__":
 	#test_cube1()
