@@ -133,6 +133,16 @@ class part(object):
 		return duplicate
 	
 	@property
+	def label(self):
+		"""Object name"""
+		return self.obj.Label
+	
+	@label.setter
+	def label(self, value):
+		"""Object name"""
+		self.obj.Label = value
+	
+	@property
 	def T(self):
 		"""Transformation Matrix"""
 		return self.obj.Placement.toMatrix()
@@ -527,6 +537,34 @@ class svector(part):
 		#-- Return de vector z
 		return u
 			
+class frame(part):
+	"""Frame object"""
+	def __init__(self, l = 10):
+		"""Create a frame. l is the vector's length"""
+		
+		#-- Store the vector length
+		self.l = l
+
+		#-- Create the Freecad Object
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::Compound","Frame")
+		
+		#-- Build the frame
+		self.x_axis = svector(1, 0, 0, l = l)
+		self.y_axis = svector(0, 1, 0, l = l)
+		self.z_axis = svector(0, 0, 1, l = l)
+		self.origin = sphere(r = 0.5)
+		
+		#-- Creat the compound object
+		self.obj.Links = [self.x_axis.obj, self.y_axis.obj, self.z_axis.obj, 
+						  self.origin.obj]
+		
+		#-- Default display mode
+		self.obj.ViewObject.DisplayMode = 'Shaded'
+		
+		FreeCAD.activeDocument().recompute()
+		return
+
+
 		
 #---------------------------  Examples ------------------------------------
 def test_cube1():
