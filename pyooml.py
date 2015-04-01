@@ -19,7 +19,24 @@ import math
 class part(object):
 	"""Generic objects"""
 
-	version = '0.1'	
+	version = '0.1'
+
+	#-- Dictionary of colors
+	color_dict = {'red'  : (1., 0., 0.),
+				  'green': (0., 1., 0.),
+				  'blue' : (0., 0., 1.),
+				  'darkred' : (0.5, 0., 0.),
+				  'darkgreen' : (0., 0.5, 0.),
+				  'darkblue'  : (0., 0., 0.5),
+				  'yellow'    : (1., 1., 0.0),
+				  'darkyellow': (0.5, 0.5, 0.0),
+			      'orange'    : (1., 0.6, 0.0),
+				  'magenta'   : (1., 0., 1.),
+				  'darkmagenta' : (0.5, 0., 0.5),
+				  'white'     : (1., 1., 1.),
+				  'black'     : (0., 0., 0.),
+				  'gray'      : (0.8, 0.8, 0.8),
+				 }
 	
 	def __init__(self, obj):
 		
@@ -131,6 +148,23 @@ class part(object):
 		duplicate = copy.copy(self)
 		duplicate.obj = Draft.clone(self.obj)
 		return duplicate
+	
+	def color(self, r, g = None, b = None):
+		"""Set the object color"""
+		
+		#-- Check the arguments
+		if g == None and b == None:
+			#-- First argument is the color name
+			try:
+				col = part.color_dict[r]
+			except:
+				col = (0.8, 0.8, 0.8)
+		else:
+			#-- Arguments are the r, g, b componentes
+			col = (float(r), float(g), float(b))
+		
+		self.obj.ViewObject.ShapeColor = col
+		return self
 	
 	@property
 	def label(self):
@@ -550,9 +584,16 @@ class frame(part):
 		
 		#-- Build the frame
 		self.x_axis = svector(1, 0, 0, l = l)
+		self.x_axis.label = "X axis"
+		
 		self.y_axis = svector(0, 1, 0, l = l)
+		self.y_axis.label = "Y axis"
+		
 		self.z_axis = svector(0, 0, 1, l = l)
+		self.z_axis.label = "Z axis"
+		
 		self.origin = sphere(r = 0.5)
+		self.origin.label = "Origin"
 		
 		#-- Creat the compound object
 		self.obj.Links = [self.x_axis.obj, self.y_axis.obj, self.z_axis.obj, 
