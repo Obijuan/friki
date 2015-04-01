@@ -457,10 +457,15 @@ class sphere(part):
 
 class svector(part):
 	"""Solid Vector class"""
-	def __init__(self, x, y = None, z = None):
-		"""Create a solid vector. From the origin to the point (x,y,z)"""
+	def __init__(self, x, y = None, z = None, l = None):
+		"""Create a solid vector. From the origin to the point (x,y,z)
+           or in that direction but with length l"""
 		
-		v = self._vector_from_args(x, y, z)
+		#-- Store the vector
+		self.v = self._vector_from_args(x, y, z)
+		
+		#-- Store the vector length
+		self.l = l
 
 		#-- Create the Freecad Object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Vector")
@@ -473,14 +478,31 @@ class svector(part):
 		
 		#-- Vector diameter
 		self.d = 0.5
-		
+
 		#-- Call the parent class constructor
-		super(svector, self).__init__(self.obj)	
+		super(svector, self).__init__(self.obj)
+		
+		#-- Default display mode
+		self.obj.ViewObject.DisplayMode = 'Shaded'
 	
 	def execute(self, obj):
 		"""Build the object"""
-		print("Draw the vector!")
-		self._vectorz()
+		
+		#-- When length l is given, a vector with length = l and
+		#-- orientation v is created
+		if self.l == None:
+			l = self.v.Length
+		else:
+			l = self.l
+		
+		#-- Create a vector in the z axis
+		vectz = self._vectorz(l = l)
+		
+		#-- Asign the shape
+		obj.Shape = vectz
+
+		#-- Orientate the vector
+		self.orientate(self.v)
 		
 	def _vectorz(self, l = 10):
 		"""Draw a vector pointing in the z direction
@@ -488,11 +510,22 @@ class svector(part):
 		
 		#-- Correct the length
 		if (l < self.l_arrow):
-			l_arrow = l/2
+			l_arrow = l/2.
 		else:
 			l_arrow = self.l_arrow
 		
+		#-- Build the object
+		vectz = Part.makeCylinder(self.d / 2.0, l - l_arrow)
+		base = Part.makeSphere(self.d / 2.0)
+		arrow = Part.makeCone(self.d/2. + 2/3. * self.d, 0.05, l_arrow)
+		arrow.Placement.Base.z = l - l_arrow
 		
+		#-- Create the union of all the parts
+		u = vectz.fuse(base)
+		u = u.fuse(arrow)
+		
+		#-- Return de vector z
+		return u
 			
 		
 #---------------------------  Examples ------------------------------------
