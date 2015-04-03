@@ -1,6 +1,13 @@
 import FreeCAD
 import math
 
+def Identity(ang):
+	"""Identity Homogeneous Matrix"""
+	return  FreeCAD.Matrix(1, 0, 0,  0,
+                           0, 1, 0,  0,
+                           0, 0, 1,  0,
+						   0, 0, 0,  1)
+
 def Translation(x, y=None, z=None):
 	"""Homogeneous matrix for translation"""
 
