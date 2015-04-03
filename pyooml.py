@@ -15,6 +15,7 @@ import Part
 import copy
 import Draft
 import math
+import HMatrix
 
 class part(object):
 	"""Generic objects"""
@@ -890,6 +891,47 @@ def test_friki_3():
 	svector(v1).color("yellow")
 	svector(v2)
 	svector(v3).translate(v2)
+
+def test_friki_4():
+	#-- Ref system 1
+	frame()
+	r1 = Vector(20, 20, 20)
+	sv1 = svector(r1).color("yellow")
+
+	#-- Ref system 2
+	sv2 = svector(10,10,4).translate(r1)
+	f2 = frame().translate(r1)
+
+def test_friki5():
+	#-- Frame 1
+	frame(l = 20)
+	v1 = Vector(20, 20, 20)
+	v1p = Vector(v1.x, v1.y, 0)
+	svector(v1).color("yellow")
+	svector(v1p).color("black")
+	
+	#-- Fram 2
+	frame(l=20).translate(v1)
+	v2 = Vector(30, 0, 10)
+	svector(v2).translate(v1)
+	svector(v2.x, v2.y, 0).color("black").translate(v1p)
+
+	#-- Frame in the robot end
+	frame(l = 20).translate(v1).translate(v2)
+
+def test_friki6():
+	#-- Frame 1
+	frame()
+	
+	#-- Frame 2
+	f2 = frame()
+	
+	#-- Homogeneours matrices
+	M = HMatrix.Translation(20, 0, 0)
+	N = HMatrix.Rotx(30)
+	
+	#-- Apply a transformation matrix to the frame 2
+	f2.T = M * N
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -915,6 +957,9 @@ if __name__ == "__main__":
 	#test_spheres_1()
 	#test_vector_1()
 	#test_friki_1()
-	test_friki_3()
+	#test_friki_3()
+	#test_friki_4()
+	test_friki6()
+
 
 

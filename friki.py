@@ -257,50 +257,6 @@ def matrix_rotx(ang):
                              0,  0,               0,            1)
 
 
-def test4():
-	r1 = FreeCAD.Vector(20,20,20)
-	r2 = FreeCAD.Vector(10,10,4)
-	translate(vector(r2), r1)
-	yellow(vector(r1))
-	frame()
-	f = frame()
-
-	translate(f, r1)
-
-def test5():
-	v1 = FreeCAD.Vector(20, 20, 20)
-	l1 = v1.Length
-	v2 = FreeCAD.Vector(30, 0, 10)
-	l2 = v2.Length
-	frame(l = 20)
-
-	#-- Projections of the link vector on the z=0 plane
-	v1p = FreeCAD.Vector(v1.x, v1.y, 0)
-	v2p = FreeCAD.Vector(v2.x, v2.y, 0)
-
-	#-- Draw link vector 1
-	yellow(vector(v1))
-
-	#-- Draw link2
-	translate(frame(l = 20), v1)
-	translate( vector(v2), v1)
-
-	#-- Frame in the robot end
-	translate( frame(l = 20), v1+v2)
-
-	#-- Draw the proyections (to see the robot better)
-	vector(v1p)
-	translate(vector(v2p), v1p)
-
-def test6():
-	frame()
-	f = frame()
-	M = matrix_translate(20, 0, 0)
-	N = matrix_rotx(30)
-	T = M * N
-	transform(f, T)
-
-
 #-- Exercise. Barrientos book. 79. Example. 3.1
 def barrientos_pag79_ex3_1():
 	frame()
