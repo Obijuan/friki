@@ -874,6 +874,30 @@ def test_vector_1():
 	sv5 = svector(v1).translate(v2)
 	sv6 = svector(v2).translate(v1)
 
+#---------------------------
+"""
+class Line:
+    def __init__(self, obj):
+         '''"App two point properties" '''
+         obj.addProperty("App::PropertyVector","p1","Line","Start point")
+         obj.addProperty("App::PropertyVector","p2","Line","End point").p2=FreeCAD.Vector(100,0,0)
+         obj.Proxy = self
+
+    def execute(self, fp):
+        '''"Print a short message when doing a recomputation, this method is mandatory" '''
+        fp.Shape = Part.makeLine(fp.p1,fp.p2)
+
+class ViewProviderLine:
+   def __init__(self, obj):
+      ''' Set this object to the proxy object of the actual view provider '''
+      obj.Proxy = self
+
+   def getDefaultDisplayMode(self):
+      ''' Return the name of the default display mode. It must be defined in getDisplayModes. '''
+      return "Flat Lines"
+"""
+
+
 #----------- Examples from the friki library
 def test_friki_1():
 	v = Vector(10,10,10)
@@ -932,6 +956,28 @@ def test_friki6():
 	
 	#-- Apply a transformation matrix to the frame 2
 	f2.T = M * N
+
+#-- Exercise. Barrientos book. 79. Example. 3.1
+def barrientos_pag79_ex3_1():
+	#--- Frame 1 and p vector
+	frame()
+	p = Vector(6, -3, 8)
+	svector(p)
+	
+	#--- Frame 2. Translated p
+	f2 = frame()
+	M = HMatrix.Translation(p)
+	f2.T = M
+	
+	#-- Vector r in the frame 2
+	r = Vector(-2, 7, 3)
+	sr = svector(r)
+	sr.T = M
+
+	#-- Calculate the r0 vector: r refered to frame 1
+	r0 = M.multiply(r)
+	sr0 = svector(r0).color("yellow")
+	print("r0: {}".format(r0))
 	
 if __name__ == "__main__":
 	#test_cube1()
@@ -959,7 +1005,9 @@ if __name__ == "__main__":
 	#test_friki_1()
 	#test_friki_3()
 	#test_friki_4()
-	test_friki6()
+	#test_friki6()
+	barrientos_pag79_ex3_1()
+	
 
 
 
