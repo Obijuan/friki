@@ -51,9 +51,30 @@ def barrientos_ex3_2_pag_80():
 	
 	print("r2: {}".format(r2))
 
+def barrientos_ex3_3_pag_81():
+	#-- Define the original frame and the transformation
+	fxyz = frame()
+	T = HMatrix.Rotz(-90)
+	
+	#-- Define the frame2
+	fuvw = frame()
+	fuvw.T = T
+
+	#-- Define the vectors
+	r2 = Vector(4, 8, 12)
+	r1 = T.multiply(r2)
+	print("r1: {}".format(r1))
+	
+	#-- Draw the vectors
+	sr1 = svector(r1)
+	sr2 = svector(r2)
 
 if __name__ == "__main__":
 	#barrientos_pag79_ex3_1()
-	barrientos_ex3_2_pag_80()
+	#barrientos_ex3_2_pag_80()
+	barrientos_ex3_3_pag_81()
+	
 	
 
+	
+	
