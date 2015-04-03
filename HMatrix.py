@@ -24,3 +24,19 @@ def Rotx(ang):
                            0, math.cos(rad), -math.sin(rad), 0,
                            0, math.sin(rad),  math.cos(rad), 0,
                            0, 0,              0,             1)
+
+def Roty(ang):
+	"""Homogeneous Matrix for Rotation about y axis"""
+	rad = math.radians(ang)
+	return  FreeCAD.Matrix(math.cos(rad),  0, math.sin(rad),  0,
+                           0,              1, 0,              0,
+                           -math.sin(rad), 0, math.cos(rad),  0,
+						   0,              0,             0,  1)
+
+def Rotz(ang):
+	"""Homogeneous Matrix for Rotation about z axis"""
+	rad = math.radians(ang)
+	return  FreeCAD.Matrix(math.cos(rad), -math.sin(rad), 0, 0,
+	 					   math.sin(rad), math.cos(rad),  0, 0,
+                           0,             0,              1, 0,
+						   0,             0,              0, 1)
