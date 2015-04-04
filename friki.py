@@ -69,12 +69,38 @@ def barrientos_ex3_3_pag_81():
 	sr1 = svector(r1)
 	sr2 = svector(r2)
 
+def barrientos_ex3_4_pag_84():
+	f0 = frame()
+	p = Vector(8, -4, 12)
+	
+	#-- Define the transformation
+	T1 = HMatrix.Rotx(90)
+	T2 = HMatrix.Translation(p)
+	T = T2 * T1
+	
+	#-- Vector in frame 1
+	r1 = Vector(-3, 4, -11)
+	r0 = T.multiply(r1)
+	
+	#-- Frame 1
+	f1 = frame()
+	f1.T = T
+	
+	#-- Draw the vectors
+	vp = svector(p)
+	vr1 = svector(r1).transform(T)
+	vr0 = svector(r0).color("yellow")
+	print("r0: {}".format(r0))
+
+
 if __name__ == "__main__":
 	#barrientos_pag79_ex3_1()
 	#barrientos_ex3_2_pag_80()
-	barrientos_ex3_3_pag_81()
-	
+	#barrientos_ex3_3_pag_81()
+	barrientos_ex3_4_pag_84()
 	
 
+
+	
 	
 	
