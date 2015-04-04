@@ -119,12 +119,21 @@ def barrientos_ex3_5_pag_84():
 	vr0 = svector(r0).color("yellow")
 	print("r0: {}".format(r0))
 
+def robot_model():
+	frame()
+	base = cylinder(r = 20, h = 5)
+	body = cylinder(r = 10, h = 60)
+	shoulder = cube(30,20,15, center = True).translate(0, 0, 15/2. + 60)
+	arm = cube(10, 80, 30).translate(-25, -15, 54)
+	forehand = cube(10, 60, 15, center = True).rotx(-45).translate(-10., 70, 50)
+
 if __name__ == "__main__":
 	#barrientos_pag79_ex3_1()
 	#barrientos_ex3_2_pag_80()
 	#barrientos_ex3_3_pag_81()
 	#barrientos_ex3_4_pag_84()
-	barrientos_ex3_5_pag_84()
+	#barrientos_ex3_5_pag_84()
+	robot_model()
 
 
 	
