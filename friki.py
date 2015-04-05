@@ -10,7 +10,7 @@ import FreeCAD
 import pyooml
 import HMatrix
 
-from pyooml import frame, svector, cube, cylinder
+from pyooml import frame, svector, cube, cylinder, link
 from FreeCAD import Vector
 
 #-- Exercise. Barrientos book. 79. Example. 3.1
@@ -201,9 +201,11 @@ if __name__ == "__main__":
 	#robot_model()
 	#barrientos_ex3_6_pag_89()
 	#barrientos_ex3_7_pag_90()
-	barrientos_exercise_3_6_pag_106()
+	#barrientos_exercise_3_6_pag_106()
+	f0 = frame()
+	l1 = link(l = 40, w = 5, D = 10)
+	l2 = l1.copy()
+	l2.roty(30)
+	l2.translate(40, 0, 0)
 
-
-	
-	
 	

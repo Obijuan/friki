@@ -707,29 +707,61 @@ class link(part):
 			D: Diameter of the rounded edges
 			w: thickness
 		"""
-		#-- Store the parameters
-		self.l = l
-		self.D = D
-		self.w = w
 		
 		#-- Create the FreeCAD object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Link")
 		
+		#--Add properties
+		self.obj.addProperty("App::PropertyLength","l","Length","Link Length").l = l
+		self.obj.addProperty("App::PropertyLength","D","Diameter","Edge diameter").D = D
+		self.obj.addProperty("App::PropertyLength","w","Width","Link thickness").w = w
+		
 		#-- Call the parent class constructor
 		super(link, self).__init__(self.obj)
 	
+	@property
+	def l(self):
+		"""Link length"""
+		return self.obj.l
+
+	@l.setter
+	def l(self, value):
+		"""Link length"""
+		self.obj.l = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property
+	def D(self):
+		"""Link edges diameter"""
+		return self.obj.D
+
+	@D.setter
+	def D(self, value):
+		"""Link edges diameter"""
+		self.obj.D = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property
+	def w(self):
+		"""Link thickness"""
+		return self.obj.w
+
+	@w.setter
+	def w(self, value):
+		"""Link thickness"""
+		self.obj.w = value
+		FreeCAD.ActiveDocument.recompute()
+	
 	def execute(self, obj):
 		"""Build the object"""
-		print("Link!")
-		print("type: {}".format(type(self)))
-		body = Part.makeBox(self.l, self.w, self.D, 
-							FreeCAD.Vector(0, -self.w/2., -self.D/2.))
+		body = Part.makeBox(obj.l, obj.w, obj.D, 
+							FreeCAD.Vector(0, -obj.w/2., -obj.D/2.))
 		
-		edge_o = Part.makeCylinder(self.D/2., self.w,
-							FreeCAD.Vector(0, -self.w/2., 0),  FreeCAD.Vector(0, 1, 0))
+		edge_o = Part.makeCylinder(obj.D/2., obj.w,
+							FreeCAD.Vector(0, -obj.w/2., 0),  FreeCAD.Vector(0, 1, 0))
 		
-		edge_l = Part.makeCylinder(self.D/2., self.w,
-							FreeCAD.Vector(self.l, -self.w/2., 0), FreeCAD.Vector(0, 1, 0))
+		edge_l = Part.makeCylinder(obj.D/2., obj.w,
+							FreeCAD.Vector(obj.l, -obj.w/2., 0), FreeCAD.Vector(0, 1, 0))
 		u = body.fuse(edge_o)
 		u = u.fuse(edge_l)
 		u = u.removeSplitter()
