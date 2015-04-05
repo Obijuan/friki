@@ -141,7 +141,7 @@ class part(object):
 	def copy(self):
 		"""Return a copy of the object"""
 		c = copy.copy(self)
-		c.obj = FreeCAD.ActiveDocument.copyObject(self.obj)	
+		c.obj = FreeCAD.ActiveDocument.copyObject(self.obj)
 		return c
 
 	def clone(self):
@@ -170,10 +170,12 @@ class part(object):
 	def ice(self, level = 50):
 		"""Set the transparency level 0 - 100"""
 		self.transparency = level
+		return self
 
 	def solid(self):
 		"""Set the transparency level to 0"""
 		self.transparency = 0
+		return self
 
 	@property
 	def transparency(self):
@@ -534,13 +536,13 @@ class svector(part):
 		self.obj.addProperty("App::PropertyLength","l","Length","Vector Length").l = l
 		self.obj.addProperty("App::PropertyLength","l_arrow","Arrow","Head arrow Length").l_arrow = 2
 		self.obj.addProperty("App::PropertyLength","d","Diameter","Vector diameter").d = 0.5
-		
+
 		#-- Call the parent class constructor
 		super(svector, self).__init__(self.obj)
-		
+
 		#-- Default display mode
 		self.obj.ViewObject.DisplayMode = 'Shaded'
-	
+
 	@property
 	def v(self):
 		"""Vector coordinates"""
@@ -551,7 +553,7 @@ class svector(part):
 		"""Object radius"""
 		self.obj.v = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	@property
 	def l(self):
 		"""Vector Length"""
@@ -562,7 +564,7 @@ class svector(part):
 		"""Vector Length"""
 		self.obj.l = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	@property
 	def l_arrow(self):
 		"""Head arrow length"""
@@ -573,7 +575,7 @@ class svector(part):
 		"""Head arrow legnth"""
 		self.obj.l_arrow = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	@property
 	def d(self):
 		"""Vector diameter"""
@@ -584,17 +586,17 @@ class svector(part):
 		"""Vector diameter"""
 		self.obj.d = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	def copy(self):
 		"""Copy the vector"""
 		#-- Call the parent class copy method
 		vc = super(svector, self).copy()
-		
+
 		#-- Set the default display mode
 		vc.obj.ViewObject.DisplayMode = 'Shaded'
-		
+
 		return vc
-		
+
 	def execute(self, obj):
 		"""Build the object"""
 
@@ -604,17 +606,17 @@ class svector(part):
 			l = obj.v.Length
 		else:
 			l = obj.l.Value
-		
+
 		#-- Correct the length
 		if (l < obj.l_arrow):
 			l_arrow = l/2.
 		else:
 			l_arrow = obj.l_arrow.Value
-		
+
 		#--- Create the base vector
 		base_vect = FreeCAD.Vector(obj.v)
 		base_vect.Length = l - l_arrow
-		
+
 		#-- Build the object
 		vectz = Part.makeCylinder(obj.d / 2.0, base_vect.Length,
 							    Vector(0,0,0), obj.v)
@@ -700,25 +702,26 @@ class point(part):
 
 class link(part):
 	"""Link object"""
-	
+
 	def __init__(self, l, D, w):
 		"""Parameters:
 			l: distance between centers
 			D: Diameter of the rounded edges
 			w: thickness
 		"""
-		
+
 		#-- Create the FreeCAD object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Link")
-		
+
 		#--Add properties
 		self.obj.addProperty("App::PropertyLength","l","Length","Link Length").l = l
 		self.obj.addProperty("App::PropertyLength","D","Diameter","Edge diameter").D = D
 		self.obj.addProperty("App::PropertyLength","w","Width","Link thickness").w = w
-		
+
 		#-- Call the parent class constructor
 		super(link, self).__init__(self.obj)
-	
+		return
+
 	@property
 	def l(self):
 		"""Link length"""
@@ -729,7 +732,7 @@ class link(part):
 		"""Link length"""
 		self.obj.l = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	@property
 	def D(self):
 		"""Link edges diameter"""
@@ -740,7 +743,7 @@ class link(part):
 		"""Link edges diameter"""
 		self.obj.D = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	@property
 	def w(self):
 		"""Link thickness"""
@@ -751,21 +754,21 @@ class link(part):
 		"""Link thickness"""
 		self.obj.w = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	def execute(self, obj):
 		"""Build the object"""
-		body = Part.makeBox(obj.l, obj.w, obj.D, 
+		body = Part.makeBox(obj.l, obj.w, obj.D,
 							FreeCAD.Vector(0, -obj.w/2., -obj.D/2.))
-		
+
 		edge_o = Part.makeCylinder(obj.D/2., obj.w,
 							FreeCAD.Vector(0, -obj.w/2., 0),  FreeCAD.Vector(0, 1, 0))
-		
+
 		edge_l = Part.makeCylinder(obj.D/2., obj.w,
 							FreeCAD.Vector(obj.l, -obj.w/2., 0), FreeCAD.Vector(0, 1, 0))
 		u = body.fuse(edge_o)
 		u = u.fuse(edge_l)
 		u = u.removeSplitter()
-		
+
 		#-- Asign the shape
 		obj.Shape = u
 

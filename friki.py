@@ -192,6 +192,42 @@ def barrientos_exercise_3_6_pag_106():
 	print("Transformation matrix:")
 	print(f2.T)
 
+class robot1(object):
+	"""Simple robot example"""
+	def __init__(self, a1, a2):
+		"""Robot constructor"""
+		#-- Store the robot angles
+		self.a1 = a1
+		self.a2 = a2
+		
+		#-- Create the robot parts
+		self.f0 = frame()
+		self.f1 = frame()
+		self.f2 = frame()
+		self.l1 = link(l = 40, w = 6, D = 10).ice(80)
+		self.l2 = self.l1.copy()
+		self.l2.w = 4
+		
+		#-- Recalculate robot
+		self.recalculate()
+	
+	def recalculate(self):
+		M1_1 = HMatrix.Roty(self.a1)
+		M1_2 = HMatrix.Translation(self.l1.l, 0, 0)
+		M2_1 = HMatrix.Roty(self.a2)
+		M2_2 = HMatrix.Translation(self.l2.l, 0, 0)
+		self.l1.T = M1_1
+		self.f1.T = M1_1 * M1_2
+		self.l2.T = M1_1 * M1_2 * M2_1
+		self.f2.T = M1_1 * M1_2 * M2_1 * M2_2
+	
+	def pose(self, a1, a2):
+		"""Define the robot pose"""
+		self.a1 = a1
+		self.a2 = a2
+		self.recalculate()
+	
+
 if __name__ == "__main__":
 	#barrientos_pag79_ex3_1()
 	#barrientos_ex3_2_pag_80()
@@ -202,10 +238,8 @@ if __name__ == "__main__":
 	#barrientos_ex3_6_pag_89()
 	#barrientos_ex3_7_pag_90()
 	#barrientos_exercise_3_6_pag_106()
-	f0 = frame()
-	l1 = link(l = 40, w = 5, D = 10)
-	l2 = l1.copy()
-	l2.roty(30)
-	l2.translate(40, 0, 0)
+	#robot_example_1()
+	r = robot1(-45, 30)
 
+	
 	
