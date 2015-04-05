@@ -207,6 +207,15 @@ class robot1(object):
 		self.l1 = link(l = 40, w = 6, D = 10).ice(80)
 		self.l2 = self.l1.copy()
 		self.l2.w = 4
+		self.base = sphere(r = 14, angle1 = 0).translate(0, 0, -6)
+		
+		#-- Write labels
+		self.f0.label = "Frame-0"
+		self.f1.label = "Frame-1"
+		self.f2.label = "Frame-2"
+		self.l1.label = "Link-1"
+		self.l2.label = "Link-2"
+		self.base.label = "Base"
 		
 		#-- Recalculate robot
 		self.recalculate()
