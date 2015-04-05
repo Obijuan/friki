@@ -10,7 +10,7 @@ import FreeCAD
 import pyooml
 import HMatrix
 
-from pyooml import frame, svector, cube, cylinder, link
+from pyooml import frame, svector, cube, cylinder, link, sphere
 from FreeCAD import Vector
 
 #-- Exercise. Barrientos book. 79. Example. 3.1
@@ -207,8 +207,10 @@ class robot1(object):
 		self.l1 = link(l = 40, w = 6, D = 10).ice(80)
 		self.l2 = self.l1.copy()
 		self.l2.w = 4
-		self.base = sphere(r = 14, angle1 = 0).translate(0, 0, -6)
-		
+		self.base = sphere(r = 14, angle1 = 0).translate(0, 0, -6).ice(80)
+		self.f1_r = svector(self.l1.l, 0., 0.).color("yellow")
+		self.f2_r = svector(self.l2.l, 0., 0.).color("yellow")		
+
 		#-- Write labels
 		self.f0.label = "Frame-0"
 		self.f1.label = "Frame-1"
@@ -226,9 +228,13 @@ class robot1(object):
 		M2_1 = HMatrix.Roty(self.a2)
 		M2_2 = HMatrix.Translation(self.l2.l, 0, 0)
 		self.l1.T = M1_1
-		self.f1.T = M1_1 * M1_2
-		self.l2.T = M1_1 * M1_2 * M2_1
-		self.f2.T = M1_1 * M1_2 * M2_1 * M2_2
+		self.f1.T = self.l1.T * M1_2
+		self.l2.T = self.f1.T * M2_1
+		self.f2.T = self.l2.T * M2_2
+		
+		#-- Frame position vectors
+		self.f1_r.T = self.l1.T
+		self.f2_r.T = self.l2.T
 	
 	def pose(self, a1, a2):
 		"""Define the robot pose"""
@@ -248,7 +254,7 @@ if __name__ == "__main__":
 	#barrientos_ex3_7_pag_90()
 	#barrientos_exercise_3_6_pag_106()
 	#robot_example_1()
-	r = robot1(-45, 30)
+	r = robot1(-60, 70)
 
 	
 	
