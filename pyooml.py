@@ -496,14 +496,15 @@ class cube(part):
 class sphere(part):
 	"""Primitive object: a sphere"""
 
-	def __init__(self, r):
+	def __init__(self, r, angle1 = -90):
 		"""Create a primitive sphere of given r radius"""
 
 		#-- Create the Freecad Object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::Sphere","Sphere","Sphere")
 
-		#-- Asign the radius
+		#-- Asign the attrributes
 		self.r = r
+		self.angle1 = angle1
 
 		FreeCAD.activeDocument().recompute()
 		return
@@ -517,6 +518,17 @@ class sphere(part):
 	def r(self, value):
 		"""Object radius"""
 		self.obj.Radius = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property
+	def angle1(self):
+		"""Sphere angle1"""
+		return self.obj.Angle1
+
+	@angle1.setter
+	def angle1(self, value):
+		"""Sphere angle1"""
+		self.obj.Angle1 = value
 		FreeCAD.ActiveDocument.recompute()
 
 class svector(part):
