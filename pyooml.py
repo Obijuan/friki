@@ -140,9 +140,8 @@ class part(object):
 
 	def copy(self):
 		"""Return a copy of the object"""
-
 		c = copy.copy(self)
-		c.obj = FreeCAD.ActiveDocument.copyObject(self.obj)
+		c.obj = FreeCAD.ActiveDocument.copyObject(self.obj)	
 		return c
 
 	def clone(self):
@@ -520,77 +519,115 @@ class sphere(part):
 
 class svector(part):
 	"""Solid Vector class"""
-	def __init__(self, x, y = None, z = None, l = None):
+	def __init__(self, x, y = None, z = None, l = 0):
 		"""Create a solid vector. From the origin to the point (x,y,z)
            or in that direction but with length l"""
 
-		#-- Store the vector
-		self.v = self._vector_from_args(x, y, z)
-
-		#-- Store the vector length
-		self.l = l
+		#-- Calculate the vector
+		v = self._vector_from_args(x, y, z)
 
 		#-- Create the Freecad Object
 		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Vector")
 
 		#--Add properties
-		#self.obj.addProperty("App::PropertyLength","lx","Cube","Length in x axis").lx = v.x
-
-		#-- Arrow length
-		self.l_arrow = 2
-
-		#-- Vector diameter
-		self.d = 0.5
-
+		self.obj.addProperty("App::PropertyVector","v","Vector","Vector coordinates").v = v
+		self.obj.addProperty("App::PropertyLength","l","Length","Vector Length").l = l
+		self.obj.addProperty("App::PropertyLength","l_arrow","Arrow","Head arrow Length").l_arrow = 2
+		self.obj.addProperty("App::PropertyLength","d","Diameter","Vector diameter").d = 0.5
+		
 		#-- Call the parent class constructor
 		super(svector, self).__init__(self.obj)
-
+		
 		#-- Default display mode
 		self.obj.ViewObject.DisplayMode = 'Shaded'
+	
+	@property
+	def v(self):
+		"""Vector coordinates"""
+		return self.obj.v
 
+	@v.setter
+	def v(self, value):
+		"""Object radius"""
+		self.obj.v = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property
+	def l(self):
+		"""Vector Length"""
+		return self.obj.l
+
+	@l.setter
+	def l(self, value):
+		"""Vector Length"""
+		self.obj.l = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property
+	def l_arrow(self):
+		"""Head arrow length"""
+		return self.obj.l_arrow
+
+	@l_arrow.setter
+	def l(self, value):
+		"""Head arrow legnth"""
+		self.obj.l_arrow = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	@property
+	def d(self):
+		"""Vector diameter"""
+		return self.obj.d
+
+	@d.setter
+	def d(self, value):
+		"""Vector diameter"""
+		self.obj.d = value
+		FreeCAD.ActiveDocument.recompute()
+	
+	def copy(self):
+		"""Copy the vector"""
+		#-- Call the parent class copy method
+		vc = super(svector, self).copy()
+		
+		#-- Set the default display mode
+		vc.obj.ViewObject.DisplayMode = 'Shaded'
+		
+		return vc
+		
 	def execute(self, obj):
 		"""Build the object"""
 
 		#-- When length l is given, a vector with length = l and
 		#-- orientation v is created
-		if self.l == None:
-			l = self.v.Length
+		if obj.l == 0:
+			l = obj.v.Length
 		else:
-			l = self.l
-
-		#-- Create a vector in the z axis
-		vect = self._makeVector(l = l)
-
-		#-- Asign the shape
-		obj.Shape = vect
-
-	def _makeVector(self, l = 10):
-		"""Draw a vector pointing
-		   l: Length"""
-
+			l = obj.l.Value
+		
 		#-- Correct the length
-		if (l < self.l_arrow):
+		if (l < obj.l_arrow):
 			l_arrow = l/2.
 		else:
-			l_arrow = self.l_arrow
-
+			l_arrow = obj.l_arrow.Value
+		
 		#--- Create the base vector
-		base_vect = FreeCAD.Vector(self.v)
+		base_vect = FreeCAD.Vector(obj.v)
 		base_vect.Length = l - l_arrow
-
+		
 		#-- Build the object
-		vectz = Part.makeCylinder(self.d / 2.0, base_vect.Length,
-							    Vector(0,0,0), self.v)
-		base = Part.makeSphere(self.d / 2.0)
-		arrow = Part.makeCone(self.d/2. + 2/3. * self.d, 0.05, l_arrow,
+		vectz = Part.makeCylinder(obj.d / 2.0, base_vect.Length,
+							    Vector(0,0,0), obj.v)
+		base = Part.makeSphere(obj.d / 2.0)
+		arrow = Part.makeCone(obj.d/2. + 2/3. * obj.d, 0.05, l_arrow,
 							  base_vect, base_vect)
 
 		#-- Create the union of all the parts
 		u = vectz.fuse(base)
 		u = u.fuse(arrow)
 
-		#-- Return de vector
-		return u
+		#-- Asign the shape
+		obj.Shape = u
 
 class frame(part):
 	"""Frame object"""
@@ -660,6 +697,45 @@ class point(part):
 		"""Object radius"""
 		self.obj.Radius = value
 		FreeCAD.ActiveDocument.recompute()
+
+class link(part):
+	"""Link object"""
+	
+	def __init__(self, l, D, w):
+		"""Parameters:
+			l: distance between centers
+			D: Diameter of the rounded edges
+			w: thickness
+		"""
+		#-- Store the parameters
+		self.l = l
+		self.D = D
+		self.w = w
+		
+		#-- Create the FreeCAD object
+		self.obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Link")
+		
+		#-- Call the parent class constructor
+		super(link, self).__init__(self.obj)
+	
+	def execute(self, obj):
+		"""Build the object"""
+		print("Link!")
+		print("type: {}".format(type(self)))
+		body = Part.makeBox(self.l, self.w, self.D, 
+							FreeCAD.Vector(0, -self.w/2., -self.D/2.))
+		
+		edge_o = Part.makeCylinder(self.D/2., self.w,
+							FreeCAD.Vector(0, -self.w/2., 0),  FreeCAD.Vector(0, 1, 0))
+		
+		edge_l = Part.makeCylinder(self.D/2., self.w,
+							FreeCAD.Vector(self.l, -self.w/2., 0), FreeCAD.Vector(0, 1, 0))
+		u = body.fuse(edge_o)
+		u = u.fuse(edge_l)
+		u = u.removeSplitter()
+		
+		#-- Asign the shape
+		obj.Shape = u
 
 #---------------------------  Examples ------------------------------------
 def test_cube1():
@@ -964,6 +1040,12 @@ def test_friki6():
 	#-- Apply a transformation matrix to the frame 2
 	f2.T = M * N
 
+def test_link_1():
+	f0 = frame()
+	l1 = link(l = 40, w = 5, D = 10)
+	l2 = l1.copy()
+	l2.roty(30)
+	l2.translate(40, 0, 0)
 
 if __name__ == "__main__":
 	#test_cube1()
@@ -993,4 +1075,5 @@ if __name__ == "__main__":
 	#test_friki_3()
 	#test_friki_4()
 	#test_friki5()
-	test_friki6()
+	#test_friki6()
+	test_link_1()
