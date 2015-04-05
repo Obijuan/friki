@@ -179,6 +179,19 @@ def barrientos_ex3_7_pag_90():
 	print("Result:")
 	print(f3.T)
 
+def barrientos_exercise_3_6_pag_106():
+	f0 = frame()
+	
+	#-- Define the transformations
+	M1 = HMatrix.Rotz(30)
+	M2 = HMatrix.Translation(10, 0, 0)
+	
+	f2 = frame()
+	f2.T = M1 * M2
+	
+	print("Transformation matrix:")
+	print(f2.T)
+
 if __name__ == "__main__":
 	#barrientos_pag79_ex3_1()
 	#barrientos_ex3_2_pag_80()
@@ -187,7 +200,8 @@ if __name__ == "__main__":
 	#barrientos_ex3_5_pag_84()
 	#robot_model()
 	#barrientos_ex3_6_pag_89()
-	barrientos_ex3_7_pag_90()
+	#barrientos_ex3_7_pag_90()
+	barrientos_exercise_3_6_pag_106()
 
 
 	
