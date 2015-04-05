@@ -155,6 +155,30 @@ def barrientos_ex3_6_pag_89():
 	print("Result:")
 	print(f3.T)
 
+def barrientos_ex3_7_pag_90():
+	f0 = frame()
+	
+	#-- Tranformation 1
+	p = Vector(-3, 10, 10)
+	f1 = frame()
+	M1 = HMatrix.Translation(p)
+	f1.T = M1
+	
+	#------------ Tranformation 2
+	f2 = frame()
+	M2 = HMatrix.Rotx(-90)
+	#-- As this transformation should be relative to the mobile frame (f2)
+	#-- the matrices are multipled in normal order
+	f2.T = M1 * M2
+	
+	#--------- Transformation 3
+	f3 = frame()
+	M3 = HMatrix.Roty(90)
+	f3.T = M1 * M2 * M3
+	
+	print("Result:")
+	print(f3.T)
+
 if __name__ == "__main__":
 	#barrientos_pag79_ex3_1()
 	#barrientos_ex3_2_pag_80()
@@ -162,7 +186,8 @@ if __name__ == "__main__":
 	#barrientos_ex3_4_pag_84()
 	#barrientos_ex3_5_pag_84()
 	#robot_model()
-	barrientos_ex3_6_pag_89()
+	#barrientos_ex3_6_pag_89()
+	barrientos_ex3_7_pag_90()
 
 
 	
