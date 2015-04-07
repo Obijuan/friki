@@ -70,19 +70,20 @@ class robot(object):
 	def serial_on(self):
 		#-- Open serial port
 		port=''.join(glob.glob("/dev/ttyUSB*")) 
-		self.sp = serial.Serial(port,9600)
+		self.sp = serial.Serial(port,19200)
 		
 		#-- Lauch timer
 		self.timer = QtCore.QTimer()
 		self.timer.timeout.connect(self.update)
 		self.timer.start(50)
-		
+		print("Launched!")
+	
 	def serial_off(self):
 		self.timer.stop()
 	
 	def update(self):
 		self.sp.write('\n')
-		angle = 90. * float(self.sp.readline()) / 1023.
+		angle = 90 - (90. * float(self.sp.readline()) / 1023.)
 		self.a1 = -angle
 		self.recalculate()
 		print("Angle: {}".format(angle))
