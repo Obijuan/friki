@@ -69,8 +69,8 @@ class robot(object):
 	
 	def serial_on(self):
 		#-- Open serial port
-		port=''.join(glob.glob("/dev/ttyUSB*")) 
-		self.sp = serial.Serial(port,19200)
+		port="/dev/ttyUSB0"
+		self.sp = serial.Serial(port,19200, timeout = 0.2)
 		
 		#-- Lauch timer
 		self.timer = QtCore.QTimer()
