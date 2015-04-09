@@ -155,6 +155,12 @@ class part(object):
 		duplicate.obj = Draft.clone(self.obj)
 		return duplicate
 
+	def export_STL(self, filename="unnamed.stl"):
+		"""Export the object to STL file"""
+		objs = [self.obj]
+		import Mesh
+		Mesh.export(objs, filename)
+
 	def color(self, r, g = None, b = None):
 		"""Set the object color"""
 
