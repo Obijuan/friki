@@ -68,6 +68,8 @@ class part(object):
 
 		#-- Apply the translation (relative to the current position)
 		self.obj.Placement.Base += v
+		
+		FreeCAD.ActiveDocument.recompute()
 
 		return self
 
