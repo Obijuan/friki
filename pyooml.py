@@ -43,7 +43,10 @@ class part(object):
 
 		#-- Configure the object for working ok in the Freecad environment
 		obj.Proxy = self
-		obj.ViewObject.Proxy = self
+		try:
+			obj.ViewObject.Proxy = self
+		except:
+			print("No viewprovider")
 
 		#-- Show the object!
 		FreeCAD.ActiveDocument.recompute()
@@ -68,7 +71,7 @@ class part(object):
 
 		#-- Apply the translation (relative to the current position)
 		self.obj.Placement.Base += v
-		
+
 		FreeCAD.ActiveDocument.recompute()
 
 		return self
@@ -521,7 +524,7 @@ class sphere(part):
 		"""Object radius"""
 		self.obj.Radius = value
 		FreeCAD.ActiveDocument.recompute()
-	
+
 	@property
 	def angle1(self):
 		"""Sphere angle1"""
@@ -785,6 +788,11 @@ class link(part):
 
 		#-- Asign the shape
 		obj.Shape = u
+
+#--- Aux functions for testing
+def newdoc():
+	"""Create a new Freecad document"""
+	return FreeCAD.newDocument("Example")
 
 #---------------------------  Examples ------------------------------------
 def test_cube1():
