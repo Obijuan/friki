@@ -557,7 +557,7 @@ class svector(part):
 		#--Add properties
 		self.obj.addProperty("App::PropertyVector","v","Vector","Vector coordinates").v = v
 		self.obj.addProperty("App::PropertyLength","l","Length","Vector Length").l = l
-		self.obj.addProperty("App::PropertyLength","l_arrow","Arrow","Head arrow Length").l_arrow = 2
+		self.obj.addProperty("App::PropertyLength","arrow_l","Arrow","Head arrow Length").arrow_l = 2
 		self.obj.addProperty("App::PropertyLength","d","Diameter","Vector diameter").d = 0.5
 
 		#-- Call the parent class constructor
@@ -589,14 +589,14 @@ class svector(part):
 		FreeCAD.ActiveDocument.recompute()
 
 	@property
-	def l_arrow(self):
+	def arrow_l(self):
 		"""Head arrow length"""
-		return self.obj.l_arrow
+		return self.obj.arrow_l
 
-	@l_arrow.setter
-	def l(self, value):
+	@arrow_l.setter
+	def arrow_l(self, value):
 		"""Head arrow legnth"""
-		self.obj.l_arrow = value
+		self.obj.arrow_l = value
 		FreeCAD.ActiveDocument.recompute()
 
 	@property
@@ -631,20 +631,20 @@ class svector(part):
 			l = obj.l.Value
 
 		#-- Correct the length
-		if (l < obj.l_arrow):
-			l_arrow = l/2.
+		if (l < obj.arrow_l):
+			arrow_l = l/2.
 		else:
-			l_arrow = obj.l_arrow.Value
+			arrow_l = obj.arrow_l.Value
 
 		#--- Create the base vector
 		base_vect = FreeCAD.Vector(obj.v)
-		base_vect.Length = l - l_arrow
+		base_vect.Length = l - arrow_l
 
 		#-- Build the object
 		vectz = Part.makeCylinder(obj.d / 2.0, base_vect.Length,
 							    Vector(0,0,0), obj.v)
 		base = Part.makeSphere(obj.d / 2.0)
-		arrow = Part.makeCone(obj.d/2. + 2/3. * obj.d, 0.05, l_arrow,
+		arrow = Part.makeCone(obj.d/2. + 2/3. * obj.d, 0.05, arrow_l,
 							  base_vect, base_vect)
 
 		#-- Create the union of all the parts
