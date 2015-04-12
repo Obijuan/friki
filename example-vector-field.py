@@ -1,7 +1,7 @@
 import pyooml
 import FreeCAD
 import math
-from pyooml import svector
+from pyooml import *
 from FreeCAD import Vector
 
 #-- create a new document
